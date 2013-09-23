@@ -101,10 +101,6 @@ public class ShelfInfoReader {
 				}
 				q.add(ss);
 			}
-			List<Shelf> q = shelfQeueuReference.get();
-			if(q != null) {
-				q.add(Shelf.EndMark);
-			}
 			return null;
 		}
     }

@@ -2,6 +2,8 @@ package jp.oreore.hk.json.obj;
 
 import jp.oreore.hk.json.Entry;
 import jp.oreore.hk.json.Util;
+import jp.oreore.hk.types.BookAttrOnPath;
+import jp.oreore.hk.types.BookDirection;
 import jp.oreore.hk.types.ItemType;
 
 import org.json.JSONException;
@@ -20,7 +22,7 @@ public class Attributes {
 	private static Entry<String> coverImagePrefix = new Entry<String>("coverImagePrefix");
 	private static Entry<String> introduction = new Entry<String>("introduction");
 	private static Entry<String> itemType = new Entry<String>("itemType");
-	private static Entry<String> twinView = new Entry<String>("twinView");
+	private static Entry<Boolean> twinView = new Entry<Boolean>("twinView");
 
 	public Attributes(JSONObject o) {
 		if(o == null) {
@@ -30,23 +32,38 @@ public class Attributes {
 		self = o;
 	}
 
-	public String getDirection() { return direction.get(self); }
+	public BookDirection getDirection() { String s = direction.get(self); return BookDirection.of(s); }
 	public String getSearchPagenoFormat() { return searchPagenoFormat.get(self); }
 	public String getBackImagePrefix() { return backImagePrefix.get(self); }
 	public String getCoverImagePrefix() { return coverImagePrefix.get(self); }
 	public String getIntroduction() { return introduction.get(self); }
 	public ItemType getItemType() { String s = itemType.get(self); return ItemType.of(s); }
-	public boolean isTwinView() { return Boolean.valueOf(twinView.get(self)); }
+	public boolean isTwinView() { Boolean s = twinView.get(self); return (s == null ? true : s); }
+	
+	public boolean hasDirection() { return direction.hasValue(self); }
+	public boolean hasItemType() { return itemType.hasValue(self); }
+	public boolean hasTwinView() { return twinView.hasValue(self); }
 
-	public void setDirection(String u) { direction.set(self, u); }
+	public void setDirection(BookDirection u) { direction.set(self, u.toString()); }
 	public void setSearchPagenoFormat(String u) { searchPagenoFormat.set(self, u); }
 	public void setBackImagePrefix(String u) { backImagePrefix.set(self, u); }
 	public void setCoverImagePrefix(String u) { coverImagePrefix.set(self, u); }
 	public void setIntroduction(String u) { introduction.set(self, u); }
 	public void setItemType(ItemType u) { itemType.set(self, u.toString()); }
-	public void setTwinView(boolean twin) { twinView.set(self, Boolean.valueOf(twin).toString()); }
+	public void setTwinView(boolean twin) { twinView.set(self, Boolean.valueOf(twin)); }
 
 	public JSONObject toJSONObject() { return self; }
+	
+	public Attributes setOverride(Attributes a) {
+		if(a.hasDirection()) { setDirection(a.getDirection()); }
+		if(a.getSearchPagenoFormat() != null) { setSearchPagenoFormat(a.getSearchPagenoFormat()); }
+		if(a.getBackImagePrefix() != null) { setBackImagePrefix(a.getBackImagePrefix()); }
+		if(a.getCoverImagePrefix() != null) { setCoverImagePrefix(a.getCoverImagePrefix()); }
+		if(a.getIntroduction() != null) { setIntroduction(a.getIntroduction()); }
+		if(a.hasItemType()) { setItemType(a.getItemType()); }
+		if(a.hasTwinView()) { setTwinView(a.isTwinView()); }
+		return this;
+	}
 
 	@Override
 	public String toString() {
@@ -57,5 +74,23 @@ public class Attributes {
 			Log.e(TAG, "toString() illeagal.", e);
 		}
 		return ret;
+	}
+	
+	//
+	// set from path
+	//
+	
+	public void setFromPath(BookAttrOnPath a) {
+		if(BookAttrOnPath.L2R == a) {
+			setDirection(BookDirection.L2R);
+		} else if(BookAttrOnPath.html == a) {
+			setItemType(ItemType.Html);
+		} else if(BookAttrOnPath.solo == a) {
+			setTwinView(false);
+		} else if(BookAttrOnPath.all == a) {
+			String fmt = "[(^%s)|(^%s)]*.*";
+			String s = String.format(fmt, getBackImagePrefix(), getCoverImagePrefix());
+			setSearchPagenoFormat(s);
+		}
 	}
 }

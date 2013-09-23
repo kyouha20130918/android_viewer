@@ -1,11 +1,16 @@
 package jp.oreore.hk.viewer.shelf;
 
+import jp.oreore.hk.file.dir.DirSimple;
 import jp.oreore.hk.file.json.JsonLibrary;
+import jp.oreore.hk.iface.IBookOpener;
 import jp.oreore.hk.iface.IShelfLogic;
+import jp.oreore.hk.json.obj.Book;
 import jp.oreore.hk.json.obj.Library;
+import jp.oreore.hk.types.ItemType;
 import jp.oreore.hk.types.PageType;
 import jp.oreore.hk.viewer.R;
 import jp.oreore.hk.viewer.Util;
+import jp.oreore.hk.viewer.book.BookActivity;
 import jp.oreore.hk.viewer.library.LibraryActivity;
 import android.os.Bundle;
 import android.app.Activity;
@@ -19,7 +24,7 @@ import android.view.MenuItem;
 import android.widget.SearchView;
 
 public class ShelfActivity extends Activity
-				implements SearchView.OnQueryTextListener {
+				implements SearchView.OnQueryTextListener, IBookOpener {
 	private static final String TAG = "ShelfActivity";
 	
 	// for intent bundle
@@ -27,12 +32,9 @@ public class ShelfActivity extends Activity
 	// for intent bundle key
 	public static final String IKEY_LIBRARY_PATH = "libpath";
 	public static final String IKEY_JSON_LIBRARY = "library";
-	public static final String IKEY_JSON_SHELF = "shelf";
 	// for bundle of savedInstanceState
 	private static final String KEY_LIBRARY_PATH = "libpath";
 	private static final String KEY_JSON_LIBRARY = "library";
-	private static final String KEY_JSON_SHELF = "shelf";
-	private static final String KEY_SEARCH_QUERY = "query";
 
 	private String libPath;
 	private Library currentPosition;
@@ -177,6 +179,24 @@ public class ShelfActivity extends Activity
     	intent.putExtra(LibraryActivity.IKEY_BUNDLE, appData);
 		startActivity(intent);
     }
+    
+    private void callBook(String bookPath) {
+        Bundle appData = new Bundle();
+        appData.putString(BookActivity.IKEY_LIBRARY_PATH, libPath);
+        if(!TextUtils.isEmpty(bookPath)) {
+            currentPosition.setBookPath(bookPath);
+        }
+        currentPosition.setPage(PageType.Book);
+        appData.putString(BookActivity.IKEY_JSON_LIBRARY, currentPosition.toString());
+    	Intent intent = new Intent(this, BookActivity.class);
+    	intent.setAction(Intent.ACTION_VIEW);
+    	intent.putExtra(BookActivity.IKEY_BUNDLE, appData);
+		startActivity(intent);
+    }
+
+    private void callHtml(Book b) {
+    	;
+    }
 
     //
     // handle intent
@@ -189,21 +209,18 @@ public class ShelfActivity extends Activity
 
     	if(Intent.ACTION_SEARCH.equals(act)) {
     		Log.d(TAG, "Handle Intent.ACTION_SEARCH.");
-    		Bundle appData = intent.getBundleExtra(SearchManager.APP_DATA);
-        	if(appData == null) {
-                initData.putString(KEY_LIBRARY_PATH, libPath);
-                initData.putString(KEY_JSON_LIBRARY, currentPosition.toString());
-        	} else {
-                initData.putString(KEY_LIBRARY_PATH, appData.getString(IKEY_LIBRARY_PATH));
-                initData.putString(KEY_JSON_LIBRARY, appData.getString(IKEY_JSON_LIBRARY));
-        	}
-        	initData.putString(KEY_SEARCH_QUERY, intent.getStringExtra(SearchManager.QUERY));
+            initData.putString(KEY_LIBRARY_PATH, libPath);
+        	String query = intent.getStringExtra(SearchManager.QUERY);
+        	currentPosition.setSearchCondition(query);
+        	currentPosition.setShelfPath("");
+            initData.putString(KEY_JSON_LIBRARY, currentPosition.toString());
     	} else if(Intent.ACTION_VIEW.equals(act)) {
     		Log.d(TAG, "Handle Intent.ACTION_VIEW.");
     		Bundle appData = intent.getBundleExtra(IKEY_BUNDLE);
-            initData.putString(KEY_LIBRARY_PATH, appData.getString(IKEY_LIBRARY_PATH));
-            initData.putString(KEY_JSON_LIBRARY, appData.getString(IKEY_JSON_LIBRARY));
-            initData.putString(KEY_JSON_SHELF, appData.getString(IKEY_JSON_SHELF));
+    		if(appData != null) {
+                initData.putString(KEY_LIBRARY_PATH, appData.getString(IKEY_LIBRARY_PATH));
+                initData.putString(KEY_JSON_LIBRARY, appData.getString(IKEY_JSON_LIBRARY));
+    		}
     	} else {
     		Log.e(TAG, "Recieve NoMean Intent[" + act + "].");
     		backToLibrary();
@@ -227,11 +244,14 @@ public class ShelfActivity extends Activity
     // return true if need finish
     private boolean init(Bundle savedInstanceState) {
     	boolean ret = false;
-    	setCurrentPosition(savedInstanceState);
-    	String query = savedInstanceState.getString(KEY_SEARCH_QUERY);
+    	if(setCurrentPosition(savedInstanceState)) {
+    		callBook("");
+    		return true;
+    	}
+    	String query = currentPosition.getSearchCondition();
     	if(TextUtils.isEmpty(query)) {
-    		String jsonShelfStr = savedInstanceState.getString(KEY_JSON_SHELF);
-        	logic = new LogicShelf(this, jsonShelfStr);
+    		String shelfPath = currentPosition.getShelfPath() + getString(R.string.fname_shelf_json);
+        	logic = new LogicShelf(this, libPath, shelfPath);
     	} else {
         	logic = new LogicSearch(this, libPath, query);
     	}
@@ -243,16 +263,27 @@ public class ShelfActivity extends Activity
     	return ret;
     }
     
-    // make library info from bundle, or default
-    private void setCurrentPosition(Bundle savedInstanceState) {
-		libPath = savedInstanceState.getString(KEY_LIBRARY_PATH);
-		String libJsonStr = savedInstanceState.getString(KEY_JSON_LIBRARY);
-		currentPosition = new Library(libJsonStr);
+    // make library info if bundled, return true if move to book
+    private boolean setCurrentPosition(Bundle savedInstanceState) {
+		String lpath = savedInstanceState.getString(KEY_LIBRARY_PATH);
+		if(!TextUtils.isEmpty(lpath)) {
+			libPath = lpath;
+			String libJsonStr = savedInstanceState.getString(KEY_JSON_LIBRARY);
+			currentPosition = new Library(libJsonStr);
+			if(PageType.Book == currentPosition.getPage() && !TextUtils.isEmpty(currentPosition.getBookPath())) {
+				return true;
+			}
+		}
 		currentPosition.setPage(PageType.Shelf);
+		return false;
     }
     
     // write library.json
     private void writeCurrentPosition() {
+		DirSimple libdir = new DirSimple(libPath);
+		if(!libdir.isValid()) {
+			return;
+		}
     	currentPosition.removeBookPath();
 		String libfnm = getString(R.string.fname_library_json);
 		JsonLibrary f = new JsonLibrary(libPath + libfnm, null);
@@ -273,5 +304,18 @@ public class ShelfActivity extends Activity
     public boolean onQueryTextSubmit(String qeury) {
 		searchView.clearFocus();
     	return false;
+    }
+    
+    // IBookOpener
+    public void openBook(Book b) {
+    	ItemType itemType = b.getAttributes().getItemType();
+    	if(ItemType.Book == itemType) {
+    		callBook(b.getPath());
+    		finish();
+    	} else if(ItemType.Html == itemType) {
+    		callHtml(b);
+    	} else {
+    		Log.e(TAG, "unknown itemType[" + itemType + "]");
+    	}
     }
 }

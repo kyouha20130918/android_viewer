@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import jp.oreore.hk.file.dir.DirSimple;
+import jp.oreore.hk.file.json.JsonShelf;
 import jp.oreore.hk.iface.IShelfLogic;
 import jp.oreore.hk.json.obj.Library;
 import jp.oreore.hk.json.obj.Shelf;
@@ -12,11 +13,14 @@ import jp.oreore.hk.viewer.library.LibraryActivity;
 public class LogicShelf extends LogicBase implements IShelfLogic {
 	private static final String TAG = "LogicShelf";
 
+	private String libPath;
 	private Shelf currentShelf;
 	
-	public LogicShelf(Activity activity, String jsonShelfStr) {
+	public LogicShelf(Activity activity, String l, String shelfPath) {
 		super(activity);
-		currentShelf = new Shelf(jsonShelfStr);
+		libPath = l;
+		JsonShelf json = new JsonShelf(shelfPath);
+		currentShelf = json.read();
 		Log.d(TAG, "shelf:[" + currentShelf.getName() + "]");
 	}
 	
@@ -45,6 +49,11 @@ public class LogicShelf extends LogicBase implements IShelfLogic {
 	@Override
 	public void setToBundleForBackToLibrary(Bundle appData) {
 		appData.putString(LibraryActivity.IKEY_JSON_SHELF, currentShelf.toString());
+	}
+	
+	@Override
+	protected String getLibPath() {
+		return libPath;
 	}
 
 	@Override

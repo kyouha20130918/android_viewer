@@ -20,6 +20,23 @@ public abstract class JsonBase<T> {
 		path = fnm;
 	}
 	
+	public String getFname() {
+		File f = new File(path);
+		return f.getName();
+	}
+	
+	public String getFpath() {
+		File f = new File(path);
+		String fnm = f.getName();
+		String apath = f.getAbsolutePath();
+		return apath.replace(fnm, "");
+	}
+	
+	public boolean exists() {
+		File f = new File(path);
+		return f.canRead();
+	}
+	
 	public T read() {
 		File f = new File(path);
 		if(!f.canRead()) {

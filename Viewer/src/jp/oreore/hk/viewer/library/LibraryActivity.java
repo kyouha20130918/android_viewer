@@ -8,7 +8,6 @@ import java.util.List;
 
 import jp.oreore.hk.file.dir.DirLibrary;
 import jp.oreore.hk.file.json.JsonLibrary;
-import jp.oreore.hk.file.json.JsonShelf;
 import jp.oreore.hk.iface.IShelvesMaker;
 import jp.oreore.hk.iface.ITabSelectedInform;
 import jp.oreore.hk.json.obj.Library;
@@ -193,16 +192,25 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
 		startActivity(intent);
     }
 
-    private void callShelfForSearch(String query) {
+    private enum SetNextPageType {
+    	Yes,
+    	No
+    }
+    private void callShelfForSearch(String query, SetNextPageType setNext) {
 		Log.d(TAG, "Call Shelf for Search.");
 		
         Bundle appData = new Bundle();
         appData.putString(ShelfActivity.IKEY_LIBRARY_PATH, currentDir.getPath());
+        currentPosition.setSearchCondition(query);
+        currentPosition.setShelfPath("");
+        if(SetNextPageType.Yes == setNext) {
+            currentPosition.setBookPath("");
+            currentPosition.setPage(PageType.Shelf);
+        }
         appData.putString(ShelfActivity.IKEY_JSON_LIBRARY, currentPosition.toString());
     	Intent intent = new Intent(this, ShelfActivity.class);
-    	intent.setAction(Intent.ACTION_SEARCH);
-    	intent.putExtra(SearchManager.QUERY, query);
-    	intent.putExtra(SearchManager.APP_DATA, appData);
+    	intent.setAction(Intent.ACTION_VIEW);
+    	intent.putExtra(ShelfActivity.IKEY_BUNDLE, appData);
 		startActivity(intent);
     }
     
@@ -214,13 +222,18 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
 		startActivity(intent);
     }
     
-    private void callShelfForDirectly(Shelf s) {
+    private void callShelfForDirectly(String shelfPath, SetNextPageType setNext) {
 		Log.d(TAG, "Call Shelf for Directly.");
     	
         Bundle appData = new Bundle();
         appData.putString(ShelfActivity.IKEY_LIBRARY_PATH, currentDir.getPath());
+        currentPosition.setSearchCondition("");
+        currentPosition.setShelfPath(shelfPath);
+        if(SetNextPageType.Yes == setNext) {
+            currentPosition.setBookPath("");
+            currentPosition.setPage(PageType.Shelf);
+        }
         appData.putString(ShelfActivity.IKEY_JSON_LIBRARY, currentPosition.toString());
-        appData.putString(ShelfActivity.IKEY_JSON_SHELF, s.toString());
     	Intent intent = new Intent(this, ShelfActivity.class);
     	intent.setAction(Intent.ACTION_VIEW);
     	intent.putExtra(ShelfActivity.IKEY_BUNDLE, appData);
@@ -238,7 +251,7 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
     	if(Intent.ACTION_SEARCH.equals(act)) {
     		Log.d(TAG, "Handle Intent.ACTION_SEARCH.");
     		String query = intent.getStringExtra(SearchManager.QUERY);
-    		callShelfForSearch(query);
+    		callShelfForSearch(query, SetNextPageType.Yes);
     		ret = true;
     	} else if(Intent.ACTION_VIEW.equals(act)) {
     		Log.d(TAG, "Handle Intent.ACTION_VIEW.");
@@ -282,12 +295,10 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
 		setCurrentDir();
 		if(readCurrentPosition()) {
 			if(TextUtils.isEmpty(currentPosition.getSearchCondition())) {
-				JsonShelf jshelf = new JsonShelf(currentPosition.getShelfPath() + getString(R.string.fname_shelf_json));
-				Shelf s = jshelf.read();
-				callShelfForDirectly(s);
+				callShelfForDirectly(currentPosition.getShelfPath(), SetNextPageType.No);
 			} else {
 				String query = currentPosition.getSearchCondition();
-	    		callShelfForSearch(query);
+	    		callShelfForSearch(query, SetNextPageType.No);
 			}
 			return true;
 		}
@@ -337,7 +348,8 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
 		String libjson = getString(R.string.json_default_library);
 		JsonLibrary f = new JsonLibrary(libdir + libfnm, libjson);
 		currentPosition = f.read();
-		if(PageType.Library != currentPosition.getPage()) {
+		if(PageType.Library != currentPosition.getPage()
+				&& (!TextUtils.isEmpty(currentPosition.getShelfPath()) || !TextUtils.isEmpty(currentPosition.getSearchCondition()))) {
 			return true;
 		}
 		return false;
@@ -345,6 +357,9 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
     
     // write library.json
     private void writeCurrentPosition() {
+    	if(!currentDir.isValid()) {
+    		return;
+    	}
     	currentPosition.removeBookPath();
     	currentPosition.removeShelfPath();
 		String libdir = getLibraryPath();
@@ -502,7 +517,7 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
     public void informSelectedShelf(int pos, ItemType i) {
     	List<Shelf> ret = getShelfList(i);
     	Shelf s = ret.get(pos);
-    	callShelfForDirectly(s);
+    	callShelfForDirectly(s.getPath(), SetNextPageType.Yes);
     	finish();
     }
     

@@ -41,9 +41,23 @@ public class Book {
 	public Attributes getAttributes() { return new Attributes(attributes.get(self)); }
 	public String getPath() { return path.get(self); }
 
+	public void setColophon(Colophon c) { colophon.set(self, c.toJSONObject());}
+	public void setAttributes(Attributes a) { attributes.set(self, a.toJSONObject());}
 	public void setPath(String u) { path.set(self, u); }
 
 	public JSONObject toJSONObject() { return self; }
+	
+	public void setOverride(Book b) {
+		Colophon c = b.getColophon();
+		setColophon(getColophon().setOverride(c));
+		Attributes a = b.getAttributes();
+		setAttributes(getAttributes().setOverride(a));
+	}
+	
+	public String getBackFaceFname() {
+		String prefix = getAttributes().getBackImagePrefix();
+		return getPath() + prefix + "00.jpg";
+	}
 
 	@Override
 	public String toString() {

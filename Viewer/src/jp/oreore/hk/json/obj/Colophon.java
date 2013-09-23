@@ -29,11 +29,20 @@ public class Colophon {
 
 	public String getId() { String s = id.get(self); return (s == null ? "" : s); }
 	public String getTitle() { String s = title.get(self); return (s == null ? "" : s); }
-	public String getAuther() { String s = author.get(self); return (s == null ? "" : s); }
+	public String getAuthor() { String s = author.get(self); return (s == null ? "" : s); }
 	public String getPublisher() { String s = publisher.get(self); return (s == null ? "" : s); }
 	public String getPubdate() { String s = pubdate.get(self); return (s == null ? "" : s); }
 
 	public JSONObject toJSONObject() { return self; }
+	
+	public Colophon setOverride(Colophon c) {
+		if(c.getId() != null) { id.set(self, c.getId()); }
+		if(c.getTitle() != null) { title.set(self, c.getTitle()); }
+		if(c.getAuthor() != null) { author.set(self, c.getAuthor()); }
+		if(c.getPublisher() != null) { publisher.set(self, c.getPublisher()); }
+		if(c.getPubdate() != null) { pubdate.set(self, c.getPubdate()); }
+		return this;
+	}
 
 	@Override
 	public String toString() {

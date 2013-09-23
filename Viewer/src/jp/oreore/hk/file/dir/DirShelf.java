@@ -24,13 +24,13 @@ public class DirShelf extends DirBase {
 	}
 	
 	private Book readBookInfoFromFile(File f) {
-		JsonBook jb = new JsonBook(f.getAbsolutePath().replace(jsonFname, ""), jsonFname);
+		JsonBook jb = new JsonBook(f.getAbsolutePath());
 		Book b = jb.read();
 		return b;
 	}
 	
 	private Book readBookInfoFromDir(File f) {
-		JsonBook jb = new JsonBook(f.getAbsolutePath(), jsonFname);
+		JsonBook jb = new JsonBook(f.getAbsolutePath() + "/" + jsonFname);
 		Book b = jb.read();
 		return b;
 	}
@@ -43,8 +43,8 @@ public class DirShelf extends DirBase {
 		}
 		private boolean match(Book b) {
 			String title = b.getColophon().getTitle();
-			String author = b.getColophon().getAuther();
-			if(title.indexOf(query) > 0 || author.indexOf(query) > 0) {
+			String author = b.getColophon().getAuthor();
+			if(title.indexOf(query) >= 0 || author.indexOf(query) >= 0) {
 				return true;
 			}
 			return false;
@@ -80,7 +80,6 @@ public class DirShelf extends DirBase {
 				return ret;
 			}
 			Book b = readBookInfoFromDir(f);
-			b.setPath(f.getAbsolutePath().replace(getPath(), ""));
 			ret.add(b);
 		}
 		return ret;

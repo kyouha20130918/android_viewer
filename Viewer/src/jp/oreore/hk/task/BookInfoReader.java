@@ -53,6 +53,7 @@ public class BookInfoReader {
     public void exec() {
     	Reader task = new Reader();
 		task.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+		Log.d(TAG, "BookInfoRead started.");
     }
     
     //
@@ -106,17 +107,13 @@ public class BookInfoReader {
 				if(!f.exists() || !f.canRead()) {
 					continue;	// something changed
 				}
-				JsonBook bj = new JsonBook(b.getPath(), fnm);
+				JsonBook bj = new JsonBook(fnm);
 				Book ss = bj.read();
 				List<Book> q = bookQeueuReference.get();
 				if(q == null) {
 					break;		// destroyed
 				}
 				q.add(ss);
-			}
-			List<Book> q = bookQeueuReference.get();
-			if(q != null) {
-				q.add(Book.EndMark);
 			}
 			return null;
 		}

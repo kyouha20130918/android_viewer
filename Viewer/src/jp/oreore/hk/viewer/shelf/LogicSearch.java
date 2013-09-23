@@ -48,8 +48,13 @@ public class LogicSearch extends LogicBase implements IShelfLogic {
 	}
 
 	@Override
+	protected String getLibPath() {
+		return libPath;
+	}
+
+	@Override
 	protected String getShelfPath() {
-		return "";
+		return libPath;
 	}
 
 	@Override

@@ -17,4 +17,16 @@ public class DirSimple {
 	public boolean isValid() {
 		return (f.isDirectory() && f.canRead());
 	}
+	
+	public String getCurrent() {
+		return f.getName();
+	}
+	
+	public String getParent() {
+		String p = f.getParent();
+		if(!p.endsWith("/")) {
+			p = p + "/";
+		}
+		return p;
+	}
 }
