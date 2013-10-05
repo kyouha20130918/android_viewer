@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textTitleDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="@string/dialog_pagejump_title"
+        android:background="#6600cc00"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <SeekBar
+        android:id="@+id/pageSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp" />
+
+    <TextView
+        android:id="@+id/pageInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/blank_text" />
+    
+    <View android:id="@+id/Separator" 
+        android:layout_width="wrap_content" 
+        android:background="#DD008800" 
+        android:layout_height="3dp" 
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
+	</View>
+
+    <TextView
+        android:id="@+id/textTitleMarks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_pagejump_marks"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ListView
+        android:id="@+id/listViewMarks"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" >
+    </ListView>
+
+</LinearLayout>

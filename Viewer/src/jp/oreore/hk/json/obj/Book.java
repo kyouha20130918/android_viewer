@@ -2,6 +2,7 @@ package jp.oreore.hk.json.obj;
 
 import jp.oreore.hk.json.Entry;
 import jp.oreore.hk.json.Util;
+import jp.oreore.hk.types.BookDirection;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +31,7 @@ public class Book {
 		} catch (JSONException e) {
 			Log.e(TAG, "Book(s) Illeagal string.[" + s + "]", e);
 		} finally {
-			this.self = o;
+			self = o;
 		}
 	}
 	public static Book getEmptyInstance() {
@@ -54,11 +55,15 @@ public class Book {
 		setAttributes(getAttributes().setOverride(a));
 	}
 	
-	public String getBackFaceFname() {
-		String prefix = getAttributes().getBackImagePrefix();
-		return getPath() + prefix + "00.jpg";
+	public boolean isR2L() {
+		BookDirection d = getAttributes().getDirection();
+		return (BookDirection.R2L == d);
 	}
-
+	
+	public boolean isTwin() {
+		return getAttributes().isTwinView();
+	}
+	
 	@Override
 	public String toString() {
 		String ret = "";

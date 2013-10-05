@@ -12,7 +12,15 @@ public class RawScreenSize {
 	
 	public int width;
 	public int height;
+	public float density;
 	public int densityDpi;
+	
+	private RawScreenSize(RawScreenSize r) {
+		width = r.width;
+		height = r.height;
+		density = r.density;
+		densityDpi = r.densityDpi;
+	}
 	
 	public RawScreenSize(Activity act) {
 		DisplayMetrics dm = getScreenPixels(act);
@@ -32,12 +40,19 @@ public class RawScreenSize {
 		}
 		Log.d(TAG, "raw pixel width=" + width + ", height=" + height);
 		
+		density = dm.density;
 		densityDpi = dm.densityDpi;
-		Log.d(TAG, "density=" + dm.density + ", dpi=" + densityDpi);
+		Log.d(TAG, "density=" + density + ", dpi=" + densityDpi);
 		
 		float physicalWidthInchi = 1.0f * width / densityDpi; 
 		float physicalHeightInchi = 1.0f * height / densityDpi;
 		Log.d(TAG, "calc. physical inchi width=" + physicalWidthInchi + ", height=" + physicalHeightInchi);
+	}
+	
+	public static RawScreenSize getHalfWidth(RawScreenSize r) {
+		RawScreenSize half = new RawScreenSize(r);
+		half.width = (int)Math.floor((1.0f * half.width + 0.5f) / 2.0f);
+		return half;
 	}
 
 	private DisplayMetrics getScreenPixels(Activity act) {

@@ -70,7 +70,7 @@ public class DirShelf extends DirBase {
 	}
 
 	public List<Book> getBooks() {
-		List<File> list = selectDeeply(new BookFilter(), maxSearchCount, checker);
+		List<File> list = selectDirDeeply(new BookFilter(), maxSearchCount, checker);
 		List<Book> ret = new ArrayList<Book>(maxSearchCount);
 		if(checker.shouldBeBreak()) {
 			return ret;

@@ -288,7 +288,9 @@ public class ShelfActivity extends Activity
 		String libfnm = getString(R.string.fname_library_json);
 		JsonLibrary f = new JsonLibrary(libPath + libfnm, null);
     	if(!f.write(currentPosition)) {
-			Util.printToast(this, "write failed.[" + libfnm + "]");
+    		String msg = "write failed.[" + libfnm + "]";
+    		Log.e(TAG, msg);
+			Util.printToast(this, msg);
     	}
     }
     

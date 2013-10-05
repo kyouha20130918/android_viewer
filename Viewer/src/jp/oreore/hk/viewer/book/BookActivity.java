@@ -3,8 +3,13 @@ package jp.oreore.hk.viewer.book;
 import jp.oreore.hk.file.dir.DirSimple;
 import jp.oreore.hk.file.json.JsonBook;
 import jp.oreore.hk.file.json.JsonLibrary;
+import jp.oreore.hk.file.json.JsonNote;
+import jp.oreore.hk.iface.IPageTurner;
 import jp.oreore.hk.json.obj.Book;
 import jp.oreore.hk.json.obj.Library;
+import jp.oreore.hk.json.obj.Note;
+import jp.oreore.hk.listener.PageGesture;
+import jp.oreore.hk.screen.RawScreenSize;
 import jp.oreore.hk.types.PageType;
 import jp.oreore.hk.viewer.R;
 import jp.oreore.hk.viewer.Util;
@@ -12,11 +17,15 @@ import jp.oreore.hk.viewer.shelf.ShelfActivity;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 
-public class BookActivity extends Activity {
+public class BookActivity extends Activity
+							implements IPageTurner {
 	private static final String TAG = "BookActivity";
 
 	// for intent bundle
@@ -31,7 +40,11 @@ public class BookActivity extends Activity {
 	private String libPath;
 	private Library currentPosition;
 	private Book currentBook;
+	private Note currentNote;
 	private boolean needWriteLibrary = false;
+	private RawScreenSize rawSize;
+	private LogicPage logic;
+	private GestureDetector detector;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,17 +54,14 @@ public class BookActivity extends Activity {
 		setContentView(R.layout.activity_book);
 		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		//getActionBar().hide();
+		getActionBar().hide();
 
-		//if(savedInstanceState != null) {
-		//	restoreSavedInstanceState(savedInstanceState);
-		//}
-		
 		if(handleIntent(getIntent())) {
 			backToShelf();
 			finish();
 			return;
 		}
+		detector = new GestureDetector(this, new PageGesture(this, currentBook.isR2L(), rawSize));
 	}
 	
 	@Override
@@ -60,6 +70,11 @@ public class BookActivity extends Activity {
 	    super.onResume();
 		
 		Log.d(TAG, "book=[" + currentBook.getPath() + "]");
+	    
+	    if(logic != null) {
+			logic.setExitTasksEarly(false);
+			logic.startShowPage();
+	    }
 	}
 
     @Override
@@ -72,7 +87,12 @@ public class BookActivity extends Activity {
 	protected void onDestroy() {
 		Log.d(TAG, "onDestroy Start.");
 	    super.onDestroy();
+
+	    if(logic != null) {
+			logic.setExitTasksEarly(true);
+	    }
 	    
+	    writeCurrentNote();
 	    if(needWriteLibrary) {
 			writeCurrentPosition();
 	    }
@@ -93,6 +113,12 @@ public class BookActivity extends Activity {
 		Log.d(TAG, "onRestoreInstanceState Start.");
 	}
 	
+	@Override 
+    public boolean onTouchEvent(MotionEvent event) { 
+        this.detector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
 	//
 	// for menu
 	//
@@ -165,26 +191,26 @@ public class BookActivity extends Activity {
     // internal methods
     //
     
-    private void restoreSavedInstanceState(Bundle savedInstanceState) {
-		Log.d(TAG, "restore savedInstanceState Start.");
-		
-		libPath = savedInstanceState.getString(KEY_LIBRARY_PATH);
-		String libJsonStr = savedInstanceState.getString(KEY_JSON_LIBRARY);
-		currentPosition = new Library(libJsonStr);
-    }
-    
     // return true if need backToShelf and finish
     private boolean init(Bundle savedInstanceState) {
-    	boolean ret = false;
     	setCurrentPosition(savedInstanceState);
     	String fnm = currentPosition.getBookPath() + getString(R.string.fname_book_json);
     	JsonBook.init(getString(R.string.json_default_attributes), getString(R.string.fname_bookattr_json), libPath);
-    	JsonBook json = new JsonBook(fnm);
-    	if(!json.exists()) {
+    	JsonBook jBook = new JsonBook(fnm);
+    	if(!jBook.exists()) {
     		return true;
     	}
-    	currentBook = json.read();
-    	return ret;
+    	currentBook = jBook.read();
+    	String fnote = currentPosition.getBookPath() + getString(R.string.fname_booknote_json);
+    	JsonNote jNote = new JsonNote(fnote);
+    	currentNote = jNote.read();
+    	if(TextUtils.isEmpty(currentNote.getId())) {
+    		currentNote.setId(currentBook.getColophon().getId());
+    	}
+		rawSize = new RawScreenSize(this);
+    	logic = new LogicPage(this, currentBook, currentNote, rawSize);
+    	logic.startReadPages();
+    	return false;
     }
 
     // make library, book info from bundle, or default
@@ -203,8 +229,66 @@ public class BookActivity extends Activity {
 		String libfnm = getString(R.string.fname_library_json);
 		JsonLibrary f = new JsonLibrary(libPath + libfnm, null);
     	if(!f.write(currentPosition)) {
-			Util.printToast(this, "write failed.[" + libfnm + "]");
+    		String msg = "write failed.[" + libfnm + "]";
+    		Log.e(TAG, msg);
+			Util.printToast(this, msg);
+    	}
+    }
+
+    // write booknote.json
+    private void writeCurrentNote() {
+    	String fnm = currentPosition.getBookPath() + getString(R.string.fname_booknote_json);
+    	JsonNote f = new JsonNote(fnm);
+    	if(!f.write(currentNote)) {
+    		String msg = "write failed.[" + fnm + "]";
+    		Log.e(TAG, msg);
     	}
     }
     
+    //
+    // for IPageTurner
+    //
+    
+	public void showActionBar() {
+		if(!getActionBar().isShowing()) {
+			getActionBar().show();
+		}
+	}
+	public void hideActionBar() {
+		if(getActionBar().isShowing()) {
+			getActionBar().hide();
+		}
+	}
+	public void turnPageToForward() {
+		logic.turnToForward();
+	}
+	public void turnPageToBackward() {
+		logic.turnToBackward();
+	}
+	public void turnPageDirect(int idx) {
+		logic.turnToDirect(idx);
+	}
+	public void showPageDialog() {
+		PageJumpDialog dialog = PageJumpDialog.newInstance(this);
+		dialog.show(getFragmentManager(), "pageJumpDialog");
+	}
+	public void moveToDetail() {
+		
+	}
+	public void moveToBack() {
+		backToShelf();
+    	finish();
+	}
+	public int getCurrentIdx() {
+		return logic.getCurrentIdx();
+	}
+	public int getPageCount() {
+		return logic.getPageCount();
+	}
+	public String getPageInfo(int idx) {
+		return logic.getPageInfo(idx);
+	}
+	public boolean isR2L() {
+		return currentBook.isR2L();
+	}
 }

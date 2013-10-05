@@ -14,11 +14,12 @@
     <string name="search_title">Search</string>
     <string name="title_activity_shelf">Shelf</string>
     <string name="json_default_library">{"page":"library","tab":"book"}</string>
-    <string name="json_default_attributes">{"attributes":{"direction":"RightToLeft","searchPagenoFormat":"'.\\d{3}'","backImagePrefix":"B","coverImagePrefix":"C","introduction":"C02","itemType":"book","twinView":"true"}}</string>
+    <string name="json_default_attributes">{"attributes":{"direction":"RightToLeft","searchPagenoFormat":"'.\\\\d{3}'","backImagePrefix":"B","coverImagePrefix":"C","introduction":"C02","itemType":"book","twinView":"true"}}</string>
     <string name="fname_library_json">library.json</string>
     <string name="fname_shelf_json">bookshelf.json</string>
     <string name="fname_book_json">bookinfo.json</string>
     <string name="fname_bookattr_json">bookattr.json</string>
+    <string name="fname_booknote_json">booknote.json</string>
     <string name="max_search_count_in_shelf">200</string>
     <string name="min_pixel_of_backface_width">50</string>
     <string name="logical_max_height_of_backface_in_inchi">8</string>
@@ -26,5 +27,19 @@
     <string name="description_book_backface">Book\' Back Face</string>
     <string name="title_activity_book">Book</string>
     <string name="description_page">Page</string>
-
+    <string name="fixed_expression_image_extension">\\.(png|jpeg|jpg)</string>
+    <string name="fixed_part_backface_fname">00</string>
+    <string name="fixed_part_coverfront_fname">01</string>
+    <string name="fixed_part_coverrear_fname">02</string>
+    <string name="fixed_part_sleevefront_fname">03</string>
+    <string name="fixed_part_sleeverear_fname">04</string>
+    <string name="blank_page_fname">blank</string>
+    <string name="blank_page_extension">\\.blank</string>
+    <string name="limit_ratio_show_solo_in_landscape">1.1</string>
+    <string name="shorter_ratio_of_width_in_landscape">0.6</string>
+    <string name="blank_text"> </string>
+    <string name="dialog_pagejump_title">Dialog for Page Jump</string>
+    <string name="dialog_pagejump_button_jump">Jump</string>
+    <string name="dialog_pagejump_button_cancel">Cancel</string>
+    <string name="dialog_pagejump_marks">Page Marks</string>
 </resources>

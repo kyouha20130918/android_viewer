@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import jp.oreore.hk.file.dir.DirBook;
 import jp.oreore.hk.file.json.JsonBook;
 import jp.oreore.hk.iface.IBookOpener;
 import jp.oreore.hk.iface.IBooksMaker;
@@ -18,6 +19,8 @@ import jp.oreore.hk.task.ImageFetcher;
 import jp.oreore.hk.viewer.R;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +29,8 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
 
 public abstract class LogicBase implements IBooksMaker, AdapterView.OnItemClickListener {
 	private static final String TAG = "LogicBase";
@@ -88,12 +91,6 @@ public abstract class LogicBase implements IBooksMaker, AdapterView.OnItemClickL
 		}
 	}
 	
-	public void closeCache() {
-		if(imageFetcher != null) {
-			imageFetcher.closeCache();
-		}
-	}
-	
 	//
 	// abstract
 	//
@@ -130,24 +127,40 @@ public abstract class LogicBase implements IBooksMaker, AdapterView.OnItemClickL
 			return count;
 		}
 		
-		private void setViewSize(View v, String imagePath) {
+		private void setupForCalcBackFaceSize() {
 			if(rawSize == null) {
 				rawSize = new RawScreenSize(activity);
 				logicalScreenForBackFace = new LogicalScreenForBackFace(activity, rawSize.height);
 			}
+		}
+		
+		private void setViewSize(View v, String imagePath) {
 			ImageSize size = CalcUtil.getBackFaceSize(rawSize, logicalScreenForBackFace.ratio, imagePath);
+			setViewSize(v, size);
+		}
+		
+		private void setViewSize(View v, Drawable image) {
+			ImageSize size = CalcUtil.getBackFaceSize(rawSize, logicalScreenForBackFace.ratio, image);
+			setViewSize(v, size);
+		}
+		
+		private void setViewSize(View v, ImageSize size) {
 			boolean tooThin = (size.width < minBackFaceWidth);
 			int iWidth = (tooThin ? minBackFaceWidth : size.width);
 			LayoutParams params = v.getLayoutParams();
 			if(params == null) {
-				params = new LinearLayout.LayoutParams(iWidth, rawSize.height);
+				params = new RelativeLayout.LayoutParams(iWidth, rawSize.height);
 			}
 			params.width = iWidth;
 			params.height = rawSize.height;
 			v.setLayoutParams(params);
+			int widthPadding = 0;
 			if(tooThin) {
-				int padding = (int)((iWidth - size.width) / 2.0f);
-				v.setPadding(padding, 0, padding, 0);
+				widthPadding = (int)((iWidth - size.width) / 2.0f);
+			}
+			v.setPadding(widthPadding, 0, widthPadding, 0);
+			if(v instanceof ImageView) {
+				((ImageView)v).setScaleType(ImageView.ScaleType.FIT_END);
 			}
 		}
 		
@@ -170,7 +183,16 @@ public abstract class LogicBase implements IBooksMaker, AdapterView.OnItemClickL
 					b = foundBooks.get(position);
 				}
 			}
-			String imagePath = b.getBackFaceFname();
+			setupForCalcBackFaceSize();
+			DirBook dir = new DirBook(b, activity);
+			holder.image.setContentDescription(b.getColophon().getTitle());
+			String imagePath = dir.getBackFaceFname();
+			if(TextUtils.isEmpty(imagePath)) {
+				Drawable image = activity.getResources().getDrawable(R.drawable.noimage_backface);
+				setViewSize(holder.image, image);
+				holder.image.setImageDrawable(image);
+				return view;
+			}
 			setViewSize(holder.image, imagePath);
 			imageFetcher.loadImage(imagePath, holder.image);
 			return view;

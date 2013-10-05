@@ -366,7 +366,9 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
 		String libfnm = getString(R.string.fname_library_json);
 		JsonLibrary f = new JsonLibrary(libdir + libfnm, null);
     	if(!f.write(currentPosition) && currentDir.isValid()) {
-			Util.printToast(this, "write failed.[" + libfnm + "]");
+    		String msg = "write failed.[" + libfnm + "]";
+    		Log.e(TAG, msg);
+			Util.printToast(this, msg);
     	}
     }
     
