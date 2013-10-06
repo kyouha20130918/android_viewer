@@ -52,6 +52,10 @@
             android:name="jp.oreore.hk.viewer.book.BookActivity"
             android:label="@string/title_activity_book" >
         </activity>
+        <activity
+            android:name="jp.oreore.hk.viewer.detail.DetailActivity"
+            android:label="@string/title_activity_detail" >
+        </activity>
     </application>
 
 </manifest>

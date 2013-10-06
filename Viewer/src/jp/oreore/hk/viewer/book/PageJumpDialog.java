@@ -1,7 +1,10 @@
 package jp.oreore.hk.viewer.book;
 
 import jp.oreore.hk.iface.IPageTurner;
+import jp.oreore.hk.json.obj.Mark;
+import jp.oreore.hk.json.obj.Note;
 import jp.oreore.hk.viewer.R;
+import jp.oreore.hk.viewer.adapter.MarksAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,18 +13,24 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class PageJumpDialog extends DialogFragment {
 
 	private IPageTurner turner;
+	private Note currentNote;
 	private SeekBar seekbar;
 	private TextView pageinfo;
+	private MarksAdapter adapter;
 	
-	public static PageJumpDialog newInstance(IPageTurner t) {
+	public static PageJumpDialog newInstance(IPageTurner t, Note n) {
 		PageJumpDialog dialog = new PageJumpDialog();
 		dialog.turner = t;
+		dialog.currentNote = n;
 		return dialog;
 	}
 	
@@ -43,6 +52,15 @@ public class PageJumpDialog extends DialogFragment {
 		}
 	}
 	
+	private class ItemListener implements OnItemClickListener {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+			Mark m = adapter.getMark(position);
+			int idx = turner.getPageIdx(m.getPageName());
+	    	seekbar.setProgress(idx);
+		}
+	}
+	
 	@Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
     	LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -60,6 +78,11 @@ public class PageJumpDialog extends DialogFragment {
     	if(turner.isR2L()) {
     		seekbar.setRotation(180.0f);
     	}
+    	@SuppressWarnings("unchecked")
+		AdapterView<ListAdapter> marks = (AdapterView<ListAdapter>)dialogView.findViewById(R.id.listViewMarks);
+    	adapter = new MarksAdapter(getActivity(), R.layout.viewitem_mark, currentNote, false, null);
+    	marks.setAdapter(adapter);
+    	marks.setOnItemClickListener(new ItemListener());
 
     	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
     	builder.setView(dialogView);

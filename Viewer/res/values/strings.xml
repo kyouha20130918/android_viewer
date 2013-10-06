@@ -37,9 +37,18 @@
     <string name="blank_page_extension">\\.blank</string>
     <string name="limit_ratio_show_solo_in_landscape">1.1</string>
     <string name="shorter_ratio_of_width_in_landscape">0.6</string>
-    <string name="blank_text"> </string>
+    <string name="blank_text"></string>
     <string name="dialog_pagejump_title">Dialog for Page Jump</string>
     <string name="dialog_pagejump_button_jump">Jump</string>
     <string name="dialog_pagejump_button_cancel">Cancel</string>
     <string name="dialog_pagejump_marks">Page Marks</string>
+    <string name="title_activity_detail">Book\'s Detail</string>
+    <string name="detail_title_title">Title</string>
+    <string name="detail_title_author">Author</string>
+    <string name="detail_title_publisher">Publisher</string>
+    <string name="detail_title_published_date">Published Date</string>
+    <string name="detail_title_curpage_name">Current Page</string>
+    <string name="detail_button_mark">Mark</string>
+    <string name="marklist_button_delete">Delete</string>
+    
 </resources>

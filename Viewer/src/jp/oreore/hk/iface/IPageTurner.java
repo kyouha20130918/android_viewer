@@ -14,5 +14,6 @@ public interface IPageTurner {
 	int getPageCount();
 	int getCurrentIdx();
 	String getPageInfo(int idx);
+	int getPageIdx(String pnm);
 	boolean isR2L();
 }

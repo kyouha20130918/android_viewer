@@ -200,6 +200,17 @@ public class LogicPage implements IPagesMaker {
 		return info;
 	}
 	
+	public int getPageIdx(String pnm) {
+		int idx = 0;
+		for(String s : pageList) {
+			if(s.equals(pnm)) {
+				break;
+			}
+			idx ++;
+		}
+		return (idx >= pageList.size() ? 0 : idx);
+	}
+	
 	//
 	// interface
 	//

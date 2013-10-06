@@ -1,14 +1,19 @@
 package jp.oreore.hk.json.obj;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
 import jp.oreore.hk.json.Entry;
 import jp.oreore.hk.json.Util;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.util.Log;
 
@@ -119,7 +124,34 @@ public class Note {
 	public void removeMark(Mark m) {
 		if(markList.contains(m)) {
 			markList.remove(m);
+			setMarkList();
 		}
+	}
+	
+	public Mark getMark(String pnm) {
+		Mark ret = null;
+		for(Mark m : markList) {
+			if(m.isTemporaly()) {
+				continue;
+			}
+			String p = m.getPageName();
+			if(p.endsWith(pnm)) {
+				ret = m;
+				break;
+			}
+		}
+		return ret;
+	}
+	
+	public List<Mark> getPermanentMarkList() {
+		List<Mark> ret = new ArrayList<Mark>();
+		for(Mark m : markList) {
+			if(m.isTemporaly()) {
+				continue;
+			}
+			ret.add(m);
+		}
+		return ret;
 	}
 
 	@Override

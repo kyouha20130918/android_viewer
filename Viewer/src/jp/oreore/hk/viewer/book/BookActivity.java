@@ -8,11 +8,12 @@ import jp.oreore.hk.iface.IPageTurner;
 import jp.oreore.hk.json.obj.Book;
 import jp.oreore.hk.json.obj.Library;
 import jp.oreore.hk.json.obj.Note;
-import jp.oreore.hk.listener.PageGesture;
 import jp.oreore.hk.screen.RawScreenSize;
 import jp.oreore.hk.types.PageType;
 import jp.oreore.hk.viewer.R;
 import jp.oreore.hk.viewer.Util;
+import jp.oreore.hk.viewer.detail.DetailActivity;
+import jp.oreore.hk.viewer.listener.PageGesture;
 import jp.oreore.hk.viewer.shelf.ShelfActivity;
 import android.os.Bundle;
 import android.app.Activity;
@@ -24,8 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
-public class BookActivity extends Activity
-							implements IPageTurner {
+public class BookActivity extends Activity implements IPageTurner {
 	private static final String TAG = "BookActivity";
 
 	// for intent bundle
@@ -33,7 +33,7 @@ public class BookActivity extends Activity
 	// for intent bundle key
 	public static final String IKEY_LIBRARY_PATH = "libpath";
 	public static final String IKEY_JSON_LIBRARY = "library";
-	// for bundle of savedInstanceState
+	// for bundle of local
 	private static final String KEY_LIBRARY_PATH = "libpath";
 	private static final String KEY_JSON_LIBRARY = "library";
 
@@ -45,11 +45,14 @@ public class BookActivity extends Activity
 	private RawScreenSize rawSize;
 	private LogicPage logic;
 	private GestureDetector detector;
+	private Intent intent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "onCreate Start.");
 		super.onCreate(savedInstanceState);
+
+		intent = null;
 		
 		setContentView(R.layout.activity_book);
 		
@@ -96,21 +99,10 @@ public class BookActivity extends Activity
 	    if(needWriteLibrary) {
 			writeCurrentPosition();
 	    }
-	}
-	
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-	    super.onSaveInstanceState(outState);
-		Log.d(TAG, "onSaveInstanceState Start.");
-		
-		outState.putString(KEY_LIBRARY_PATH, libPath);
-		outState.putString(KEY_JSON_LIBRARY, currentPosition.toString());
-	}
-
-	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {  
-	    super.onRestoreInstanceState(savedInstanceState);
-		Log.d(TAG, "onRestoreInstanceState Start.");
+	    
+	    if(intent != null) {
+			startActivity(intent);
+	    }
 	}
 	
 	@Override 
@@ -164,6 +156,21 @@ public class BookActivity extends Activity
     	intent.putExtra(ShelfActivity.IKEY_BUNDLE, appData);
 		startActivity(intent);
     }
+    
+    private void callDetail() {
+		Log.d(TAG, "Call detail.");
+		
+        Bundle appData = new Bundle();
+        appData.putString(DetailActivity.IKEY_LIBRARY_PATH, libPath);
+        appData.putString(DetailActivity.IKEY_JSON_LIBRARY, currentPosition.toString());
+        appData.putString(DetailActivity.IKEY_JSON_BOOK, currentBook.toString());
+        int idx = logic.getCurrentIdx();
+        String pnm = logic.getPageInfo(idx);
+        appData.putString(DetailActivity.IKEY_JSON_PAGENAME, pnm);
+    	intent = new Intent(this, DetailActivity.class);
+    	intent.setAction(Intent.ACTION_VIEW);
+    	intent.putExtra(DetailActivity.IKEY_BUNDLE, appData);
+    }
 
     //
     // handle intent
@@ -192,8 +199,8 @@ public class BookActivity extends Activity
     //
     
     // return true if need backToShelf and finish
-    private boolean init(Bundle savedInstanceState) {
-    	setCurrentPosition(savedInstanceState);
+    private boolean init(Bundle initData) {
+    	setCurrentPosition(initData);
     	String fnm = currentPosition.getBookPath() + getString(R.string.fname_book_json);
     	JsonBook.init(getString(R.string.json_default_attributes), getString(R.string.fname_bookattr_json), libPath);
     	JsonBook jBook = new JsonBook(fnm);
@@ -213,10 +220,10 @@ public class BookActivity extends Activity
     	return false;
     }
 
-    // make library, book info from bundle, or default
-    private void setCurrentPosition(Bundle savedInstanceState) {
-		libPath = savedInstanceState.getString(KEY_LIBRARY_PATH);
-		String libJsonStr = savedInstanceState.getString(KEY_JSON_LIBRARY);
+    // make library info from bundle
+    private void setCurrentPosition(Bundle initData) {
+		libPath = initData.getString(KEY_LIBRARY_PATH);
+		String libJsonStr = initData.getString(KEY_JSON_LIBRARY);
 		currentPosition = new Library(libJsonStr);
     }
     
@@ -269,11 +276,12 @@ public class BookActivity extends Activity
 		logic.turnToDirect(idx);
 	}
 	public void showPageDialog() {
-		PageJumpDialog dialog = PageJumpDialog.newInstance(this);
+		PageJumpDialog dialog = PageJumpDialog.newInstance(this, currentNote);
 		dialog.show(getFragmentManager(), "pageJumpDialog");
 	}
 	public void moveToDetail() {
-		
+		callDetail();
+		finish();
 	}
 	public void moveToBack() {
 		backToShelf();
@@ -287,6 +295,10 @@ public class BookActivity extends Activity
 	}
 	public String getPageInfo(int idx) {
 		return logic.getPageInfo(idx);
+	}
+	public int getPageIdx(String pnm) {
+		String ppath = currentBook.getPath() + pnm;
+		return logic.getPageIdx(ppath);
 	}
 	public boolean isR2L() {
 		return currentBook.isR2L();

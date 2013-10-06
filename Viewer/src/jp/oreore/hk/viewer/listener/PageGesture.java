@@ -1,4 +1,4 @@
-package jp.oreore.hk.listener;
+package jp.oreore.hk.viewer.listener;
 
 import jp.oreore.hk.iface.IPageTurner;
 import jp.oreore.hk.screen.RawScreenSize;

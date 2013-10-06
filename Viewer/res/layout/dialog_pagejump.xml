@@ -8,6 +8,7 @@
         android:id="@+id/textTitleDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="1dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:text="@string/dialog_pagejump_title"
@@ -28,6 +29,7 @@
         android:id="@+id/pageInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="2dp"
         android:text="@string/blank_text" />
     
     <View android:id="@+id/Separator" 
@@ -42,13 +44,15 @@
         android:id="@+id/textTitleMarks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="1dp"
         android:text="@string/dialog_pagejump_marks"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ListView
         android:id="@+id/listViewMarks"
         android:layout_width="match_parent"
-        android:layout_height="200dp" >
+        android:layout_height="match_parent"
+        android:layout_gravity="center" >
     </ListView>
 
 </LinearLayout>

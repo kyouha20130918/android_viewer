@@ -103,7 +103,7 @@ public abstract class LogicBase implements IBooksMaker, AdapterView.OnItemClickL
 	// adapter
 	//
 	
-	static class ViewHolder {
+	protected static class ViewHolder {
 		ImageView image;
 	};
 	

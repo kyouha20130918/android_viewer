@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".DetailActivity" >
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1" >
+
+        <TableRow
+            android:id="@+id/tableRowTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+		        android:id="@+id/textTitleTitle"
+		        android:layout_width="100sp"
+		        android:layout_height="wrap_content"
+		        android:paddingLeft="1dp"
+		        android:text="@string/detail_title_title"
+		        android:textAppearance="?android:attr/textAppearanceSmall" />
+    
+            <TextView
+		        android:id="@+id/textValueTitle"
+		        android:layout_height="wrap_content"
+		        android:paddingLeft="1dp"
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRowAuthor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+		        android:id="@+id/textTitleAuthor"
+		        android:layout_height="wrap_content"
+		        android:paddingLeft="1dp"
+		        android:text="@string/detail_title_author"
+		        android:textAppearance="?android:attr/textAppearanceSmall" />
+    
+            <TextView
+		        android:id="@+id/textValueAuthor"
+		        android:layout_height="wrap_content"
+		        android:paddingLeft="1dp"
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRowPublisher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+		        android:id="@+id/textTitlePublisher"
+		        android:layout_height="wrap_content"
+		        android:paddingLeft="1dp"
+		        android:text="@string/detail_title_publisher"
+		        android:textAppearance="?android:attr/textAppearanceSmall" />
+    
+            <TextView
+		        android:id="@+id/textValuePublisher"
+		        android:layout_height="wrap_content"
+		        android:paddingLeft="1dp"
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRowPublishedDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+		        android:id="@+id/textTitlePublishedDate"
+		        android:layout_height="wrap_content"
+		        android:paddingLeft="1dp"
+		        android:text="@string/detail_title_published_date"
+		        android:textAppearance="?android:attr/textAppearanceSmall" />
+    
+            <TextView
+		        android:id="@+id/textValuePublishedDate"
+		        android:layout_height="wrap_content"
+		        android:paddingLeft="1dp"
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRowCurPageName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+		        android:id="@+id/textTitleCurPageName"
+		        android:layout_height="wrap_content"
+		        android:layout_gravity="center_vertical"
+		        android:paddingLeft="1dp"
+		        android:text="@string/detail_title_curpage_name"
+		        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+                
+	            <Button
+	                android:id="@+id/buttonMark"
+	                style="?android:attr/buttonStyleSmall"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_gravity="center_vertical"
+	                android:gravity="center"
+	                android:text="@string/detail_button_mark" />
+	
+	            <LinearLayout
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:orientation="vertical" >
+	
+		            <TextView
+		                android:id="@+id/textValuePageName"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+				        android:paddingLeft="5dp"
+				        android:layout_marginBottom="1dp"
+				        android:textColor="#888888"
+		                android:textAppearance="?android:attr/textAppearanceSmall" />
+		
+		            <EditText
+		                android:id="@+id/textValueMarkComment"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+				        android:paddingLeft="1dp"
+				        android:inputType="text"
+		                android:textAppearance="?android:attr/textAppearanceMedium" />
+	                
+	            </LinearLayout>
+    
+            </LinearLayout>
+
+        </TableRow>
+        
+    </TableLayout>
+
+    <View android:id="@+id/Separator" 
+        android:layout_width="wrap_content" 
+        android:background="#DD008800" 
+        android:layout_height="3dp" 
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
+	</View>
+
+    <TextView
+        android:id="@+id/textTitleMarks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="1dp"
+        android:text="@string/dialog_pagejump_marks"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+    <ListView
+        android:id="@+id/listViewMarksDetail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="2dp" >
+    </ListView>
+    
+</LinearLayout>
