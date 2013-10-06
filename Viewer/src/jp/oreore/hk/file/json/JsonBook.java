@@ -57,13 +57,13 @@ public class JsonBook extends JsonBase<Book> {
 		}
 		while(!st.isEmpty()) {
 			dirStr = st.pop();
+			DirSimple d = new DirSimple(dirStr);
+			String dnm = d.getCurrent();
+			setAttrFromPath(bRet, dnm);
 			String fnm = dirStr + attrFnm;
 			JsonBook attr = new JsonBook(fnm);
 			Book a = attr.readAttr();
 			bRet.setOverride(a);
-			DirSimple d = new DirSimple(dirStr);
-			String dnm = d.getCurrent();
-			setAttrFromPath(bRet, dnm);
 		}
 	}
 	

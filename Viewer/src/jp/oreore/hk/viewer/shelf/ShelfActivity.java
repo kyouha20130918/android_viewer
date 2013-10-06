@@ -12,6 +12,7 @@ import jp.oreore.hk.viewer.R;
 import jp.oreore.hk.viewer.Util;
 import jp.oreore.hk.viewer.book.BookActivity;
 import jp.oreore.hk.viewer.library.LibraryActivity;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.SearchManager;
@@ -195,7 +196,13 @@ public class ShelfActivity extends Activity
     }
 
     private void callHtml(Book b) {
-    	;
+    	String path = b.getPath();
+    	String fpath = path + b.getAttributes().getFirstPage();
+    	Uri uri = Uri.parse("file://" + fpath);
+    	Intent intent = new Intent(Intent.ACTION_VIEW);
+    	intent.setDataAndType(uri, b.getAttributes().getMimeType());
+    	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+		startActivity(intent);
     }
 
     //

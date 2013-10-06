@@ -3,6 +3,7 @@ package jp.oreore.hk.types;
 public enum BookAttrOnPath {
 	L2R(".L2R"),
 	html(".html"),
+	pdf(".pdf"),
 	solo(".solo"),
 	all(".all"),
 	;

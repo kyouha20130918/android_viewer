@@ -14,7 +14,7 @@
     <string name="search_title">Search</string>
     <string name="title_activity_shelf">Shelf</string>
     <string name="json_default_library">{"page":"library","tab":"book"}</string>
-    <string name="json_default_attributes">{"attributes":{"direction":"RightToLeft","searchPagenoFormat":"'.\\\\d{3}'","backImagePrefix":"B","coverImagePrefix":"C","introduction":"C02","itemType":"book","twinView":"true"}}</string>
+    <string name="json_default_attributes">{"attributes":{"itemType":"book","direction":"RightToLeft","searchPagenoFormat":"'.\\\\d{3}'","backImagePrefix":"B","coverImagePrefix":"C","introduction":"C02","twinView":"true","mimeType":"'text\\/html'","firstPage":"index.html"}}</string>
     <string name="fname_library_json">library.json</string>
     <string name="fname_shelf_json">bookshelf.json</string>
     <string name="fname_book_json">bookinfo.json</string>
