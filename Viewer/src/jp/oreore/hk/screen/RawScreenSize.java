@@ -2,6 +2,7 @@ package jp.oreore.hk.screen;
 
 import java.lang.reflect.Method;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -28,6 +29,7 @@ public class RawScreenSize {
     	
     	width = -1;
     	height = -1;
+    	int barHeight = 0;
 		try {
 			Method mGetRawH = Display.class.getMethod("getRawHeight");
 			Method mGetRawW = Display.class.getMethod("getRawWidth");
@@ -40,12 +42,19 @@ public class RawScreenSize {
 		}
 		Log.d(TAG, "raw pixel width=" + width + ", height=" + height);
 		
+		ActionBar bar = act.getActionBar();
+		if(bar.isShowing()) {
+			barHeight = bar.getHeight();
+			height -= barHeight;
+			Log.d(TAG, "raw pixel(exclude actionBar) height=" + height);
+		}
+		
 		density = dm.density;
 		densityDpi = dm.densityDpi;
 		Log.d(TAG, "density=" + density + ", dpi=" + densityDpi);
 		
 		float physicalWidthInchi = 1.0f * width / densityDpi; 
-		float physicalHeightInchi = 1.0f * height / densityDpi;
+		float physicalHeightInchi = 1.0f * (height + barHeight) / densityDpi;
 		Log.d(TAG, "calc. physical inchi width=" + physicalWidthInchi + ", height=" + physicalHeightInchi);
 	}
 	

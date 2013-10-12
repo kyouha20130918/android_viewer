@@ -8,6 +8,7 @@ import jp.oreore.hk.file.json.JsonShelf;
 import jp.oreore.hk.iface.IShelfLogic;
 import jp.oreore.hk.json.obj.Library;
 import jp.oreore.hk.json.obj.Shelf;
+import jp.oreore.hk.viewer.ViewerUtil;
 import jp.oreore.hk.viewer.library.LibraryActivity;
 
 public class LogicShelf extends LogicBase implements IShelfLogic {
@@ -16,8 +17,8 @@ public class LogicShelf extends LogicBase implements IShelfLogic {
 	private String libPath;
 	private Shelf currentShelf;
 	
-	public LogicShelf(Activity activity, String l, String shelfPath) {
-		super(activity);
+	public LogicShelf(Activity activity, ViewerUtil.ShelfViewMode mode, int idx, String l, String shelfPath) {
+		super(activity, mode, idx);
 		libPath = l;
 		JsonShelf json = new JsonShelf(shelfPath);
 		currentShelf = json.read();

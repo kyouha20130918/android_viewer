@@ -316,6 +316,31 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 		return true;
 	}
 	
+	private Rect getChildViewRect(View child) {
+        Rect viewRect = new Rect();
+        int[] childPosition = new int[2];
+        child.getLocationOnScreen(childPosition);
+        int left = childPosition[0];
+        int right = left + child.getWidth();
+        int top = childPosition[1];
+        int bottom = top + child.getHeight();
+        viewRect.set(left, top, right, bottom);
+       return viewRect;
+	}
+	
+	public int pointToPosition(int posx, int posy) {
+		int idx = -1;
+		for(int i=0;i<getChildCount();i++){
+			View child = getChildAt(i);
+            Rect viewRect = getChildViewRect(child);
+            if(viewRect.contains(posx, posy)) {
+            	idx = i;
+            	break;
+            }
+		}
+		return idx;
+	}
+	
 	private OnGestureListener mOnGesture = new GestureDetector.SimpleOnGestureListener() {
 
 		@Override
@@ -375,14 +400,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 		}
 
 		private boolean isEventWithinView(MotionEvent e, View child) {
-            Rect viewRect = new Rect();
-            int[] childPosition = new int[2];
-            child.getLocationOnScreen(childPosition);
-            int left = childPosition[0];
-            int right = left + child.getWidth();
-            int top = childPosition[1];
-            int bottom = top + child.getHeight();
-            viewRect.set(left, top, right, bottom);
+            Rect viewRect = getChildViewRect(child);
             return viewRect.contains((int) e.getRawX(), (int) e.getRawY());
         }
 	};

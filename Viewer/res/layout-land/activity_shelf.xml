@@ -30,14 +30,53 @@
 </LinearLayout>
     
 <jp.oreore.hk.ui.LinearLayoutOfIntercepetTouchEvent
-    android:id="@+id/LinearLayoutCover"
+    android:id="@+id/LinearLayoutCoverTwin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:layout_weight="5"
+	    android:gravity="right"
+	    android:orientation="horizontal" >
+	    	    
+	    <ImageView
+	        android:id="@+id/imageViewCoverLandLeft"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:contentDescription="@string/description_book_cover" />
+
+	</LinearLayout>
+	
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:layout_weight="5"
+	    android:gravity="left"
+	    android:orientation="horizontal" >
+	    	    
+	    <ImageView
+	        android:id="@+id/imageViewCoverLandRight"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:contentDescription="@string/description_book_cover" />
+    
+	</LinearLayout>
+    
+</jp.oreore.hk.ui.LinearLayoutOfIntercepetTouchEvent>
+
+<jp.oreore.hk.ui.LinearLayoutOfIntercepetTouchEvent
+    android:id="@+id/LinearLayoutCoverSolo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:baselineAligned="false"
     android:orientation="horizontal" >
 
     <ImageView
-        android:id="@+id/imageViewCoverPortrait"
+        android:id="@+id/imageViewCoverLandCenter"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:contentDescription="@string/description_book_cover" />

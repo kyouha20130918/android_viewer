@@ -13,6 +13,8 @@
     <string name="search_hint">Titles and Authors</string>
     <string name="search_title">Search</string>
     <string name="title_activity_shelf">Shelf</string>
+    <string name="action_backward">Prev. Library</string>
+    <string name="action_forward">Next Library</string>
     <string name="json_default_library">{"page":"library","tab":"book"}</string>
     <string name="json_default_attributes">{"attributes":{"itemType":"book","direction":"RightToLeft","searchPagenoFormat":"'.\\\\d{3}'","backImagePrefix":"B","coverImagePrefix":"C","introduction":"C02","twinView":"true","mimeType":"'text\\/html'","firstPage":"index.html"}}</string>
     <string name="fname_library_json">library.json</string>
@@ -25,6 +27,7 @@
     <string name="logical_max_height_of_backface_in_inchi">8</string>
     <string name="dpi_of_backface">200</string>
     <string name="description_book_backface">Book\' Back Face</string>
+    <string name="description_book_cover">Book\' Cover</string>
     <string name="title_activity_book">Book</string>
     <string name="description_page">Page</string>
     <string name="fixed_expression_image_extension">\\.(png|jpeg|jpg)</string>

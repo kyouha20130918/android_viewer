@@ -2,6 +2,7 @@ package jp.oreore.hk.viewer.listener;
 
 import jp.oreore.hk.iface.IPageTurner;
 import jp.oreore.hk.screen.RawScreenSize;
+import jp.oreore.hk.viewer.listener.GestureUtil.FlingDirection;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -16,14 +17,7 @@ public class PageGesture extends GestureDetector.SimpleOnGestureListener {
     	CenterMiddle,
     	Other,
     }
-	private enum FlingDirection {
-		Left,
-		Right,
-		Up,
-		Down,
-		NoMean
-	}
-
+    
     private IPageTurner turner;
     private boolean isR2L;
 	private RawScreenSize rawSize;
@@ -43,17 +37,23 @@ public class PageGesture extends GestureDetector.SimpleOnGestureListener {
     @Override
     public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
         //Log.d(TAG, "onFling:" + event1.toString() + ", " + event2.toString() + ", velocity=[" + velocityX + ", " + velocityY + "]"); 
-    	double angle = getAngle(event1, event2);
-    	FlingDirection d = toWhereFling(angle);
+    	double angle = GestureUtil.getAngle(event1, event2);
+    	FlingDirection d = GestureUtil.toWhereFling(angle);
         Log.d(TAG, "flinged " + d.toString());
-        
+
+        FlingDirection forward = FlingDirection.Left;
+        FlingDirection backwrad = FlingDirection.Right;
+        if(!isR2L) {
+        	forward = FlingDirection.Right;
+        	backwrad = FlingDirection.Left;
+        }
     	if(FlingDirection.Up == d) {
     		turner.moveToBack();
     	} else if(FlingDirection.Down == d) {
     		turner.moveToDetail();
-    	} else if(isR2L && FlingDirection.Right == d) {
-    		turner.turnPageToBackward();
-    	} else if(!isR2L && FlingDirection.Left == d) {
+    	} else if(forward == d) {
+    		turner.turnPageToForward();
+    	} else if(backwrad == d) {
     		turner.turnPageToBackward();
     	}
 	    return true;
@@ -112,29 +112,4 @@ public class PageGesture extends GestureDetector.SimpleOnGestureListener {
     	return ret;
     }
     
-    private double getAngle(MotionEvent event1, MotionEvent event2) {
-        float moveX = event2.getRawX() - event1.getRawX();
-        float moveY = event2.getRawY() - event1.getRawY();
-        double sita = Math.atan2(moveY, moveX);
-        double angle = Math.toDegrees(sita);
-        if(angle < 0.0) {
-        	angle += 360.0d;
-        }
-        return angle;
-    }
-
-	private FlingDirection toWhereFling(double angle) {
-		FlingDirection ret = FlingDirection.NoMean;
-		
-		if(angle <= 30.0d || angle >= 330.0d) {
-			ret = FlingDirection.Right;
-		} else if(angle >= 60.0d && angle <= 120.0d) {
-			ret = FlingDirection.Down;
-		} else if(angle >= 150.0d && angle <= 210.0d) {
-			ret = FlingDirection.Left;
-		} else if(angle >= 240.0d && angle <= 300.0d) {
-			ret = FlingDirection.Up;
-		}
-		return ret;
-	}
 }

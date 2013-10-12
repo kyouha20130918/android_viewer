@@ -11,7 +11,7 @@ import jp.oreore.hk.json.obj.Note;
 import jp.oreore.hk.screen.RawScreenSize;
 import jp.oreore.hk.types.PageType;
 import jp.oreore.hk.viewer.R;
-import jp.oreore.hk.viewer.Util;
+import jp.oreore.hk.viewer.ViewerUtil;
 import jp.oreore.hk.viewer.detail.DetailActivity;
 import jp.oreore.hk.viewer.listener.PageGesture;
 import jp.oreore.hk.viewer.shelf.ShelfActivity;
@@ -42,18 +42,16 @@ public class BookActivity extends Activity implements IPageTurner {
 	private Book currentBook;
 	private Note currentNote;
 	private boolean needWriteLibrary = false;
+	private boolean doneWriteNote = false;
 	private RawScreenSize rawSize;
 	private LogicPage logic;
 	private GestureDetector detector;
-	private Intent intent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "onCreate Start.");
 		super.onCreate(savedInstanceState);
 
-		intent = null;
-		
 		setContentView(R.layout.activity_book);
 		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -95,13 +93,11 @@ public class BookActivity extends Activity implements IPageTurner {
 			logic.setExitTasksEarly(true);
 	    }
 	    
-	    writeCurrentNote();
+	    if(!doneWriteNote) {
+		    writeCurrentNote();
+	    }
 	    if(needWriteLibrary) {
 			writeCurrentPosition();
-	    }
-	    
-	    if(intent != null) {
-			startActivity(intent);
 	    }
 	}
 	
@@ -160,6 +156,9 @@ public class BookActivity extends Activity implements IPageTurner {
     private void callDetail() {
 		Log.d(TAG, "Call detail.");
 		
+	    writeCurrentNote();
+	    doneWriteNote = true;
+	    
         Bundle appData = new Bundle();
         appData.putString(DetailActivity.IKEY_LIBRARY_PATH, libPath);
         appData.putString(DetailActivity.IKEY_JSON_LIBRARY, currentPosition.toString());
@@ -167,9 +166,10 @@ public class BookActivity extends Activity implements IPageTurner {
         int idx = logic.getCurrentIdx();
         String pnm = logic.getPageInfo(idx);
         appData.putString(DetailActivity.IKEY_JSON_PAGENAME, pnm);
-    	intent = new Intent(this, DetailActivity.class);
+    	Intent intent = new Intent(this, DetailActivity.class);
     	intent.setAction(Intent.ACTION_VIEW);
     	intent.putExtra(DetailActivity.IKEY_BUNDLE, appData);
+		startActivity(intent);
     }
 
     //
@@ -238,7 +238,7 @@ public class BookActivity extends Activity implements IPageTurner {
     	if(!f.write(currentPosition)) {
     		String msg = "write failed.[" + libfnm + "]";
     		Log.e(TAG, msg);
-			Util.printToast(this, msg);
+			ViewerUtil.printToast(this, msg);
     	}
     }
 

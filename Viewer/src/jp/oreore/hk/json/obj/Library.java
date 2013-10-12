@@ -1,7 +1,7 @@
 package jp.oreore.hk.json.obj;
 
 import jp.oreore.hk.json.Entry;
-import jp.oreore.hk.json.Util;
+import jp.oreore.hk.json.JsonUtil;
 import jp.oreore.hk.types.ItemType;
 import jp.oreore.hk.types.PageType;
 
@@ -68,7 +68,7 @@ public class Library {
 	public String toString() {
 		String ret = "";
 		try {
-			ret = self.toString(Util.indentSpaces);
+			ret = self.toString(JsonUtil.indentSpaces);
 		} catch (JSONException e) {
 			Log.e(TAG, "toString() illeagal.", e);
 		}

@@ -9,7 +9,7 @@ import jp.oreore.hk.json.obj.Library;
 import jp.oreore.hk.types.ItemType;
 import jp.oreore.hk.types.PageType;
 import jp.oreore.hk.viewer.R;
-import jp.oreore.hk.viewer.Util;
+import jp.oreore.hk.viewer.ViewerUtil;
 import jp.oreore.hk.viewer.book.BookActivity;
 import jp.oreore.hk.viewer.library.LibraryActivity;
 import android.net.Uri;
@@ -36,11 +36,15 @@ public class ShelfActivity extends Activity
 	// for bundle of savedInstanceState
 	private static final String KEY_LIBRARY_PATH = "libpath";
 	private static final String KEY_JSON_LIBRARY = "library";
-
+	private static final String KEY_VIEW_MODE = "viewmode";
+	private static final String KEY_VIEW_INDEX = "viewindex";
+	
 	private String libPath;
 	private Library currentPosition;
 	private IShelfLogic logic;
 	private boolean needWriteLibrary = false;
+	private ViewerUtil.ShelfViewMode viewMode;
+	private int viewIndex;
 	
 	private SearchView searchView;
 
@@ -51,6 +55,8 @@ public class ShelfActivity extends Activity
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
+		viewMode = ViewerUtil.ShelfViewMode.BackFace;
+		viewIndex = 0;
 		if(savedInstanceState != null) {
 			restoreSavedInstanceState(savedInstanceState);
 		}
@@ -109,6 +115,8 @@ public class ShelfActivity extends Activity
 		
 		outState.putString(KEY_LIBRARY_PATH, libPath);
 		outState.putString(KEY_JSON_LIBRARY, currentPosition.toString());
+		outState.putString(KEY_VIEW_MODE, viewMode.name());
+		outState.putInt(KEY_VIEW_INDEX, viewIndex);
 	}
 
 	@Override
@@ -215,6 +223,7 @@ public class ShelfActivity extends Activity
     	Bundle initData = new Bundle();
 
     	if(Intent.ACTION_SEARCH.equals(act)) {
+    		// comes at search on shelf activity
     		Log.d(TAG, "Handle Intent.ACTION_SEARCH.");
             initData.putString(KEY_LIBRARY_PATH, libPath);
         	String query = intent.getStringExtra(SearchManager.QUERY);
@@ -246,6 +255,11 @@ public class ShelfActivity extends Activity
 		libPath = savedInstanceState.getString(KEY_LIBRARY_PATH);
 		String libJsonStr = savedInstanceState.getString(KEY_JSON_LIBRARY);
 		currentPosition = new Library(libJsonStr);
+		String viewmodeStr = savedInstanceState.getString(KEY_VIEW_MODE);
+		if(!TextUtils.isEmpty(viewmodeStr)) {
+			viewMode = ViewerUtil.ShelfViewMode.of(viewmodeStr);
+		}
+		viewIndex = savedInstanceState.getInt(KEY_VIEW_INDEX, 0);
     }
 
     // return true if need finish
@@ -258,9 +272,9 @@ public class ShelfActivity extends Activity
     	String query = currentPosition.getSearchCondition();
     	if(TextUtils.isEmpty(query)) {
     		String shelfPath = currentPosition.getShelfPath() + getString(R.string.fname_shelf_json);
-        	logic = new LogicShelf(this, libPath, shelfPath);
+        	logic = new LogicShelf(this, viewMode, viewIndex, libPath, shelfPath);
     	} else {
-        	logic = new LogicSearch(this, libPath, query);
+        	logic = new LogicSearch(this, viewMode, viewIndex, libPath, query);
     	}
     	if(!logic.isValidParameter(currentPosition)) {
     		backToLibrary();
@@ -297,7 +311,7 @@ public class ShelfActivity extends Activity
     	if(!f.write(currentPosition)) {
     		String msg = "write failed.[" + libfnm + "]";
     		Log.e(TAG, msg);
-			Util.printToast(this, msg);
+			ViewerUtil.printToast(this, msg);
     	}
     }
     
@@ -326,5 +340,15 @@ public class ShelfActivity extends Activity
     	} else {
     		Log.e(TAG, "unknown itemType[" + itemType + "]");
     	}
+    }
+    
+    // IBookOpener
+    public void setViewMode(ViewerUtil.ShelfViewMode mode) {
+    	viewMode = mode;
+    }
+
+    // IBookOpener
+    public void setBacksIndex(int idx) {
+    	viewIndex = idx;
     }
 }

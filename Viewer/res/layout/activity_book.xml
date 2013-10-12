@@ -9,7 +9,7 @@
     tools:context=".BookActivity" >
 
     <ImageView
-        android:id="@+id/imageViewBookPagePortrate"
+        android:id="@+id/imageViewBookPagePortrait"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:contentDescription="@string/description_page" />

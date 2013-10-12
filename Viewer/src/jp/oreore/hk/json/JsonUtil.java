@@ -5,8 +5,8 @@ import java.util.Date;
 
 import android.annotation.SuppressLint;
 
-public class Util {
-	private Util() {}
+public class JsonUtil {
+	private JsonUtil() {}
 	
 	public static final int indentSpaces = 2;
 	

@@ -7,6 +7,7 @@ import android.util.Log;
 import jp.oreore.hk.file.dir.DirSimple;
 import jp.oreore.hk.iface.IShelfLogic;
 import jp.oreore.hk.json.obj.Library;
+import jp.oreore.hk.viewer.ViewerUtil;
 
 public class LogicSearch extends LogicBase implements IShelfLogic {
 	private static final String TAG = "LogicSearch";
@@ -14,8 +15,8 @@ public class LogicSearch extends LogicBase implements IShelfLogic {
 	private String libPath;
 	private String query;
 	
-	public LogicSearch(Activity activity, String l, String q) {
-		super(activity);
+	public LogicSearch(Activity activity, ViewerUtil.ShelfViewMode mode, int idx, String l, String q) {
+		super(activity, mode, idx);
 		libPath = l;
 		query = q;
 		Log.d(TAG, "query:[" + query + "]");

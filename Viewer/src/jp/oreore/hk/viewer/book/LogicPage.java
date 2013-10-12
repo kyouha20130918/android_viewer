@@ -14,8 +14,8 @@ import jp.oreore.hk.task.BookPageReader;
 import jp.oreore.hk.task.ImageCache;
 import jp.oreore.hk.task.ImageFetcher;
 import jp.oreore.hk.viewer.R;
+import jp.oreore.hk.viewer.ViewerUtil;
 import android.app.Activity;
-import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.Pair;
@@ -122,7 +122,7 @@ public class LogicPage implements IPagesMaker {
 	}
 	
 	private void showFirstPage() {
-		boolean isLandscape = (activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
+		boolean isLandscape = (ViewerUtil.OrientationMode.Landscape == ViewerUtil.getOrientationMode(activity));
 		if(isLandscape && book.isTwin()) {
 			makeTwinShower(rawSize);
 		} else {
@@ -149,7 +149,7 @@ public class LogicPage implements IPagesMaker {
 	}
 	
 	private void makeSoloShower(RawScreenSize rawSize) {
-		ImageView v = (ImageView)activity.findViewById(R.id.imageViewBookPagePortrate);
+		ImageView v = (ImageView)activity.findViewById(R.id.imageViewBookPagePortrait);
 		shower = new ShowSolo(book, pageList, rawSize, v);
 	}
 	

@@ -16,7 +16,7 @@ import jp.oreore.hk.task.ShelfInfoReader;
 import jp.oreore.hk.types.ItemType;
 import jp.oreore.hk.types.PageType;
 import jp.oreore.hk.viewer.R;
-import jp.oreore.hk.viewer.Util;
+import jp.oreore.hk.viewer.ViewerUtil;
 import jp.oreore.hk.viewer.settings.SettingsLibraryActivity;
 import jp.oreore.hk.viewer.shelf.ShelfActivity;
 import android.app.ActionBar;
@@ -47,6 +47,8 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
 	// for intent bundle key
 	public static final String IKEY_JSON_LIBRARY = "library";
 	public static final String IKEY_JSON_SHELF = "shelf";
+	// for bundle of savedInstanceState
+	private static final String KEY_JSON_LIBRARY = "library";
 	
 	private Library currentPosition;
 	private DirLibrary currentDir;
@@ -66,6 +68,10 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
 
 		PreferenceManager.setDefaultValues(this, R.xml.settings_library, false);
 
+		if(savedInstanceState != null) {
+			restoreSavedInstanceState(savedInstanceState);
+		}
+		
 		if(handleIntent(getIntent())) {
 			finish();	// receive intent to move another page
 			return;
@@ -133,6 +139,8 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
 	protected void onSaveInstanceState(Bundle outState) {
 	    super.onSaveInstanceState(outState);
 		Log.d(TAG, "onSaveInstanceState Start.");
+		
+		outState.putString(KEY_JSON_LIBRARY, currentPosition.toString());
 	}
 
 	@Override
@@ -257,8 +265,10 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
     		Log.d(TAG, "Handle Intent.ACTION_VIEW.");
         	Bundle appData = intent.getBundleExtra(IKEY_BUNDLE);
     		if(appData != null) {
-    			String libJsonStr = appData.getString(IKEY_JSON_LIBRARY);
-    			setCurrentPosition(libJsonStr);
+    			if(currentPosition == null) {
+        			String libJsonStr = appData.getString(IKEY_JSON_LIBRARY);
+        			setCurrentPosition(libJsonStr);
+    			}
     			String shelfJsonStr = appData.getString(IKEY_JSON_SHELF);
     			if(!TextUtils.isEmpty(shelfJsonStr)) {
     				shouldBeShelfSelected = new SelectedShelf();
@@ -289,6 +299,13 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
     //
     // internal methods
     //
+    
+    private void restoreSavedInstanceState(Bundle savedInstanceState) {
+		Log.d(TAG, "restore savedInstanceState Start.");
+		
+		String libJsonStr = savedInstanceState.getString(KEY_JSON_LIBRARY);
+		currentPosition = new Library(libJsonStr);
+    }
     
     // return true if need finish
     private boolean init() {
@@ -368,7 +385,7 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
     	if(!f.write(currentPosition) && currentDir.isValid()) {
     		String msg = "write failed.[" + libfnm + "]";
     		Log.e(TAG, msg);
-			Util.printToast(this, msg);
+			ViewerUtil.printToast(this, msg);
     	}
     }
     
@@ -391,25 +408,25 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
     // make tab if effective library
     private void setupView() {
 		if(!currentDir.isValid()) {
-			switchNavigationBarMode(Util.NavMode.Standard);
-			Util.printToast(this, "Invalid Library Directory.[" + currentDir.getPath() + "]");
+			switchNavigationBarMode(ViewerUtil.NavMode.Standard);
+			ViewerUtil.printToast(this, "Invalid Library Directory.[" + currentDir.getPath() + "]");
 			return;
 		}
-		switchNavigationBarMode(Util.NavMode.Tabs);
+		switchNavigationBarMode(ViewerUtil.NavMode.Tabs);
     }
 
     // set action-bar style
-    private void switchNavigationBarMode(Util.NavMode m) {
+    private void switchNavigationBarMode(ViewerUtil.NavMode m) {
     	final ActionBar actionBar = getActionBar();
     	boolean isModeTabs = (ActionBar.NAVIGATION_MODE_TABS == actionBar.getNavigationMode());
     	Log.d(TAG, "CurModeTabs:" + isModeTabs);
-    	if(isModeTabs && Util.NavMode.Standard == m) {
+    	if(isModeTabs && ViewerUtil.NavMode.Standard == m) {
     		actionBar.removeAllTabs();
     		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-    		setAccessLibraryBtn(Util.Display.ON);
-    	} else if(!isModeTabs && Util.NavMode.Tabs == m) {
+    		setAccessLibraryBtn(ViewerUtil.Display.ON);
+    	} else if(!isModeTabs && ViewerUtil.NavMode.Tabs == m) {
     		ItemType it = currentPosition.getTab();	// backup
-    		setAccessLibraryBtn(Util.Display.OFF);
+    		setAccessLibraryBtn(ViewerUtil.Display.OFF);
     		String tabNameBook = ItemType.Book.toString();
     		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 	        actionBar.addTab(actionBar.newTab()
@@ -425,10 +442,10 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
     }
     
     // access-library button on/off
-    private void setAccessLibraryBtn(Util.Display d) {
+    private void setAccessLibraryBtn(ViewerUtil.Display d) {
 		Button btn = (Button)findViewById(R.id.buttonAccessLibrary);
 		int visibility = View.INVISIBLE;
-		if(Util.Display.ON == d) {
+		if(ViewerUtil.Display.ON == d) {
 			visibility = View.VISIBLE;
 		}
 		btn.setVisibility(visibility);

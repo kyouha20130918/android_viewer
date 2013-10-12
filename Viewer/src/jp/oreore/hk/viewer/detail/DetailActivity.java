@@ -48,15 +48,12 @@ public class DetailActivity extends Activity implements OnClickListener, IMarkEd
 	private String currentPageName;
 	private Note currentNote;
 	private MarksAdapter adapter;
-	private Intent intent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "onCreate Start.");
 		super.onCreate(savedInstanceState);
 		
-		intent = null;
-
 		setContentView(R.layout.activity_detail);
 		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -74,12 +71,6 @@ public class DetailActivity extends Activity implements OnClickListener, IMarkEd
 	protected void onDestroy() {
 		Log.d(TAG, "onDestroy Start.");
 	    super.onDestroy();
-	    
-	    writeCurrentNote();
-	    
-	    if(intent != null) {
-			startActivity(intent);
-	    }
 	}
 	
 	//
@@ -110,14 +101,17 @@ public class DetailActivity extends Activity implements OnClickListener, IMarkEd
 
     private void backToBook() {
 		Log.d(TAG, "Back to Book.");
+	    
+	    writeCurrentNote();
 		
         Bundle appData = new Bundle();
         appData.putString(BookActivity.IKEY_LIBRARY_PATH, libPath);
         currentPosition.setPage(PageType.Book);
         appData.putString(BookActivity.IKEY_JSON_LIBRARY, currentPosition.toString());
-        intent = new Intent(this, BookActivity.class);
+        Intent intent = new Intent(this, BookActivity.class);
     	intent.setAction(Intent.ACTION_VIEW);
     	intent.putExtra(BookActivity.IKEY_BUNDLE, appData);
+		startActivity(intent);
     }
 
     //

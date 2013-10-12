@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import jp.oreore.hk.json.Entry;
-import jp.oreore.hk.json.Util;
+import jp.oreore.hk.json.JsonUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -158,7 +158,7 @@ public class Note {
 	public String toString() {
 		String ret = "";
 		try {
-			ret = self.toString(Util.indentSpaces);
+			ret = self.toString(JsonUtil.indentSpaces);
 		} catch (JSONException e) {
 			Log.e(TAG, "toString() illeagal.", e);
 		}
