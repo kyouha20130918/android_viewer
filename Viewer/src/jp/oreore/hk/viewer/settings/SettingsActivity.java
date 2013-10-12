@@ -12,14 +12,19 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 
-public class SettingsLibraryActivity extends Activity {
-	private static final String TAG = "SettingsLibraryActivity";
+public class SettingsActivity extends Activity {
+	private static final String TAG = "SettingsActivity";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		setAppTitleWithVersionName();
+		
 		 // Display the fragment as the main content.
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
@@ -51,6 +56,24 @@ public class SettingsLibraryActivity extends Activity {
 		startActivity(intent);
     }
     
+    //
+    // internal method
+    //
+    
+	private void setAppTitleWithVersionName() {
+		String appName = (String)getTitle();
+		
+		PackageManager pkg = getPackageManager();
+		String pkgName = getPackageName();
+		try {
+			PackageInfo info = pkg.getPackageInfo(pkgName, PackageManager.GET_META_DATA);
+			appName = appName + " version " + info.versionName;
+		} catch (NameNotFoundException e) {
+			Log.w(TAG, e.getMessage());
+		}
+		setTitle(appName);
+	}
+    
 	//
 	// for setting fragment
 	//
@@ -62,7 +85,7 @@ public class SettingsLibraryActivity extends Activity {
 	        super.onCreate(savedInstanceState);
 
 	        // Load the preferences from an XML resource
-	        addPreferencesFromResource(R.xml.settings_library);
+	        addPreferencesFromResource(R.xml.settings);
 	    }
 	    
 	    @Override

@@ -22,6 +22,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnActionExpandListener;
 import android.widget.SearchView;
 
 public class ShelfActivity extends Activity
@@ -129,6 +130,31 @@ public class ShelfActivity extends Activity
 	// for menu
 	//
 	
+	// for detect search view close
+	private class DetectSearchViewClose implements OnActionExpandListener {
+
+		@Override
+		public boolean onMenuItemActionCollapse(MenuItem item) {
+		    if(R.id.search == item.getItemId()) {
+		    	Log.d(TAG, "Search Item Collapsed.");
+		    	if(TextUtils.isEmpty(currentPosition.getShelfPath())) {
+		    		// now in search result view
+		        	backToLibrary();
+		        	finish();
+		        	return false;
+		    	}
+		    }
+
+			return true;
+		}
+
+		@Override
+		public boolean onMenuItemActionExpand(MenuItem item) {
+			return true;
+		}
+		
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		Log.d(TAG, "onCreateOptionsMenu Start.");
@@ -150,6 +176,8 @@ public class ShelfActivity extends Activity
 	    	}
 	    }
 	    searchView.setOnQueryTextListener(this);
+	    
+	    item.setOnActionExpandListener(new DetectSearchViewClose());
 	    
 		return true;
 	}
@@ -320,9 +348,10 @@ public class ShelfActivity extends Activity
     //
     
     // SearchView.OnQueryTextListener
-    public  boolean onQueryTextChange(String newText) {
+    public boolean onQueryTextChange(String newText) {
     	return false;
     }
+    
     // SearchView.OnQueryTextListener
     public boolean onQueryTextSubmit(String qeury) {
 		searchView.clearFocus();

@@ -25,7 +25,10 @@
  *
  */
 
+// --- by jp.oreore.hk ---
 // modify for clear warning
+// add method pointToPosition()
+//  and extract getChildViewRect() from isEventWithinView() 
 
 package com.devsmart.android.ui;
 

@@ -17,7 +17,7 @@ import jp.oreore.hk.types.ItemType;
 import jp.oreore.hk.types.PageType;
 import jp.oreore.hk.viewer.R;
 import jp.oreore.hk.viewer.ViewerUtil;
-import jp.oreore.hk.viewer.settings.SettingsLibraryActivity;
+import jp.oreore.hk.viewer.settings.SettingsActivity;
 import jp.oreore.hk.viewer.shelf.ShelfActivity;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -66,7 +66,7 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
 		Log.d(TAG, "onCreate Start.");
 		super.onCreate(savedInstanceState);
 
-		PreferenceManager.setDefaultValues(this, R.xml.settings_library, false);
+		PreferenceManager.setDefaultValues(this, R.xml.settings, false);
 
 		if(savedInstanceState != null) {
 			restoreSavedInstanceState(savedInstanceState);
@@ -196,7 +196,7 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
     private void callSettingsForLibrary() {
 		Log.d(TAG, "Call Settings for Library.");
 		
-    	Intent intent = new Intent(this, SettingsLibraryActivity.class);
+    	Intent intent = new Intent(this, SettingsActivity.class);
 		startActivity(intent);
     }
 
