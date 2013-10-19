@@ -143,6 +143,7 @@ public class ImageCache {
         // Add to memory cache
         if (mMemoryCache != null) {
             mMemoryCache.put(data, value);
+            Log.d(TAG, "Put memory cache:[" + data + "]");
         }
     }
 
@@ -160,7 +161,7 @@ public class ImageCache {
         }
 
         if (memValue != null) {
-            Log.d(TAG, "Memory cache hit");
+            Log.d(TAG, "Memory cache hit:[" + data + "]");
         }
 
         return memValue;

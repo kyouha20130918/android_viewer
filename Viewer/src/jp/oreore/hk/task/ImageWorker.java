@@ -68,6 +68,7 @@ public abstract class ImageWorker {
      *
      * @param data The URL of the image to download.
      * @param imageView The ImageView to bind the downloaded image to.
+     *        if null then memory cache only.
      */
     public void loadImage(Object data, ImageView imageView) {
         if (data == null) {
@@ -82,12 +83,16 @@ public abstract class ImageWorker {
 
         if (value != null) {
             // Bitmap found in memory cache
-            imageView.setImageDrawable(value);
+        	if(imageView != null) {
+                imageView.setImageDrawable(value);
+        	}
         } else if (cancelPotentialWork(data, imageView)) {
             final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
-            final AsyncDrawable asyncDrawable =
-                    new AsyncDrawable(mResources, mLoadingBitmap, task);
-            imageView.setImageDrawable(asyncDrawable);
+            if(imageView != null) {
+                final AsyncDrawable asyncDrawable =
+                        new AsyncDrawable(mResources, mLoadingBitmap, task);
+                imageView.setImageDrawable(asyncDrawable);
+            }
 
             // NOTE: This uses a custom version of AsyncTask that has been pulled from the
             // framework and slightly modified. Refer to the docs at the top of the class
@@ -254,7 +259,8 @@ public abstract class ImageWorker {
             // another thread and the ImageView that was originally bound to this task is still
             // bound back to this task and our "exit early" flag is not set, then call the main
             // process method (as implemented by a subclass)
-            if (bitmap == null && !isCancelled() && getAttachedImageView() != null
+            // modify : not check imageView exits for fetch image
+            if (bitmap == null && !isCancelled() /* && getAttachedImageView() != null */
                     && !mExitTasksEarly) {
                 bitmap = processBitmap(params[0]);
             }

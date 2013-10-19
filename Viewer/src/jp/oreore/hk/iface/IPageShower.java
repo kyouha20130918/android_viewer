@@ -11,6 +11,7 @@ public interface IPageShower {
 	int getCurrentIdx();
 	String getCurrentPpath();
 	Iterator<Pair<String, ImageView>> iterator();
+	String getNextPpath();
 	void turnToForward();
 	void turnToBackward();
 	void clearView();

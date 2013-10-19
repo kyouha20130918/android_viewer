@@ -43,7 +43,7 @@ public class PageGesture extends GestureDetector.SimpleOnGestureListener {
 
         FlingDirection forward = FlingDirection.Left;
         FlingDirection backwrad = FlingDirection.Right;
-        if(!isR2L) {
+        if(isR2L) {
         	forward = FlingDirection.Right;
         	backwrad = FlingDirection.Left;
         }

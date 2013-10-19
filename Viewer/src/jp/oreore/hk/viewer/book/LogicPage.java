@@ -119,6 +119,8 @@ public class LogicPage implements IPagesMaker {
 			}
 			imageFetcher.loadImage(pnm, v);
 		}
+		String prefetchpnm = shower.getNextPpath();
+		imageFetcher.loadImage(prefetchpnm, null);
 	}
 	
 	private void showFirstPage() {
@@ -150,7 +152,7 @@ public class LogicPage implements IPagesMaker {
 	
 	private void makeSoloShower(RawScreenSize rawSize) {
 		ImageView v = (ImageView)activity.findViewById(R.id.imageViewBookPagePortrait);
-		shower = new ShowSolo(book, pageList, rawSize, v);
+		shower = new ShowSolo(book, pageList, rawSize, v, blankExtension);
 	}
 	
 	private void makeTwinShower(RawScreenSize rawSize) {

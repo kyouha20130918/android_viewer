@@ -2,9 +2,11 @@ package jp.oreore.hk.image;
 
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import jp.oreore.hk.screen.RawScreenSize;
 
 public class CalcUtil {
+	private static final String TAG = "CalcUtil";
 
 	private CalcUtil() {}
 	
@@ -36,24 +38,25 @@ public class CalcUtil {
 		}
 	};
 	
-	private static ImageSize getFitSize(RawScreenSize rawSize, String imagePath, Expand expand) {
+	private static ImageSize calcFitSize(ImageSize screenSize, ImageSize orgSize, Expand expand) {
 		ImageSize size = new ImageSize();
-		ImageSize orgSize = getOriginalSize(imagePath);
 		
-		float wRatio = 1.0f * rawSize.width / orgSize.width;
-		float hRatio = 1.0f * rawSize.height / orgSize.height;
-		if(wRatio > 1.0f && hRatio >= 1.0f) {
+		float wRatio = 1.0f * screenSize.width / orgSize.width;
+		float hRatio = 1.0f * screenSize.height / orgSize.height;
+		Log.d(TAG, "wRatio=" + wRatio + ", hRatio=" + hRatio);
+		if(wRatio >= 1.0f && hRatio >= 1.0f) {
 			// small image
 			if(Expand.No == expand) {
 				return orgSize;
 			}
 			// expand
 			float ratio = wRatio;
-			if(wRatio < hRatio) {
+			if(wRatio > hRatio) {
 				ratio = hRatio;
 			}
-			size.width = (int)Math.floor(1.0f * orgSize.width / ratio);
-			size.height = (int)Math.floor(1.0f * orgSize.height / ratio);
+			size.width = (int)Math.floor(1.0f * orgSize.width * ratio);
+			size.height = (int)Math.floor(1.0f * orgSize.height * ratio);
+			Log.d(TAG, "fit width=" + size.width + ", height=" + size.height + ", ratio=" + ratio);
 			return size;
 		}
 		// large image
@@ -63,8 +66,20 @@ public class CalcUtil {
 		}
 		size.width = (int)Math.floor(1.0f * orgSize.width * ratio);
 		size.height = (int)Math.floor(1.0f * orgSize.height * ratio);
+		Log.d(TAG, "fit width=" + size.width + ", height=" + size.height + ", ratio=" + ratio);
 		
 		return size;
+	}
+	
+	private static ImageSize getFitSize(RawScreenSize rawSize, String imagePath, Expand expand) {
+		ImageSize orgSize = getOriginalSize(imagePath);
+		Log.d(TAG, "path=" + imagePath + ", width=" + orgSize.width + ", height=" + orgSize.height);
+
+		ImageSize screenSize = new ImageSize();
+		screenSize.width = rawSize.width;
+		screenSize.height = rawSize.height;
+		
+		return calcFitSize(screenSize, orgSize, expand);
 	}
 
 	public static ImageSize getBackFaceSize(RawScreenSize rawSize, float ratio, String imagePath) {
@@ -115,5 +130,25 @@ public class CalcUtil {
 		ImageSize fit = result.fitSize;
 		RawScreenSize raw = result.rawSize;
 		return ((1.0f * fit.width / raw.width) < shorterRatio);
+	}
+	
+	private static void adjustHeight(CalcResult result, int height) {
+		Log.d(TAG, "adjust : path=" + result.path + ", width=" + result.orgSize.width + ", height=" + result.orgSize.height);
+
+		ImageSize screenSize = new ImageSize();
+		screenSize.width = result.rawSize.width;
+		screenSize.height = height;
+		
+		ImageSize ret = calcFitSize(screenSize, result.orgSize, result.expand);
+		result.fitSize.width = ret.width;
+		result.fitSize.height = ret.height;
+	}
+	
+	public static void adjustHeight(CalcResult fresult, CalcResult sresult) {
+		if(fresult.fitSize.height < sresult.fitSize.height) {
+			adjustHeight(sresult, fresult.fitSize.height);
+		} else {
+			adjustHeight(fresult, sresult.fitSize.height);
+		}
 	}
 }

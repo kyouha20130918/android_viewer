@@ -9,7 +9,7 @@
     <string name="title_activity_settings">Settings</string>
     <string name="setting_library_path">Library Path</string>
     <string name="prefkey_library_path">prefkey_library_path</string>
-    <string name="default_library_path">/sdcard/useTc/</string>
+    <string name="default_library_path">/sdcard/usbTc/</string>
     <string name="search_hint">Titles and Authors</string>
     <string name="search_title">Search</string>
     <string name="title_activity_shelf">Shelf</string>

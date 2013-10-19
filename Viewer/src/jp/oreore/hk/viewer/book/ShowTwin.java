@@ -15,6 +15,7 @@ import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import jp.oreore.hk.iface.IPageShower;
+import jp.oreore.hk.image.CalcUtil;
 import jp.oreore.hk.image.ImageSize;
 import jp.oreore.hk.json.obj.Book;
 import jp.oreore.hk.screen.RawScreenSize;
@@ -34,11 +35,10 @@ public class ShowTwin extends ShowBase implements IPageShower {
 	private Queue<QueueItem> showQueue;
 	private float limitRatioForSolo;
 	private float shorterRatioOfWidth;
-	private String blankExtension;
 	private boolean showSolo;
 	
 	public ShowTwin(Book b, List<String> l, RawScreenSize r, ImageView vLeft, ImageView vRight, ImageView vCenter, float limit, float shorter, String be) {
-		super(b, l, RawScreenSize.getHalfWidth(r));
+		super(b, l, RawScreenSize.getHalfWidth(r), be);
 		imageViewMap = new HashMap<PagePos, ImageView>();
 		if(book.isR2L()) {
 			imageViewMap.put(PagePos.Even, vRight);
@@ -65,10 +65,17 @@ public class ShowTwin extends ShowBase implements IPageShower {
 			showSolo = true;
 		} else {
 			PagePos pos = getCurrentPagePos();
-			showQueue.offer(new QueueItem(pos, presult));
 			
 			String opath = getPname(getOpositePageIdx());
 			CalcResult oresult = new CalcResult(rawSize, opath);
+			
+			if(!presult.path.endsWith(blankExtension)
+					&& !oresult.path.endsWith(blankExtension)
+					&& presult.fitSize.height != oresult.fitSize.height) {
+				CalcUtil.adjustHeight(presult, oresult);
+			}
+			
+			showQueue.offer(new QueueItem(pos, presult));
 			showQueue.offer(new QueueItem(getOpositePagePos(), oresult));
 		}
 	}
@@ -156,6 +163,24 @@ public class ShowTwin extends ShowBase implements IPageShower {
 	@Override
 	public Iterator<Pair<String, ImageView>> iterator() {
 		return new Iter();
+	}
+	
+	@Override
+	public String getNextPpath() {
+		int nidx = 2;
+		if(showSolo) {
+			nidx = 1;
+		} else {
+			PagePos pos = getCurrentPagePos();
+			if(PagePos.Odd == pos) {
+				nidx = 1;
+			}
+		}
+		String ret = super.getNextPpath(nidx);
+		if(ret.endsWith(blankExtension)) {
+			ret = super.getNextPpath(nidx + 1);
+		}
+		return ret;
 	}
 
 	@Override

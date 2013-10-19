@@ -11,6 +11,7 @@ public class ShowBase {
 	protected RawScreenSize rawSize;
 	protected int idx;
 	protected CalcIndex calcIdx;
+	protected String blankExtension;
 
 	protected enum PagePos {
 		Odd,
@@ -18,10 +19,11 @@ public class ShowBase {
 		Center
 	}
 
-	public ShowBase(Book b, List<String> l, RawScreenSize r) {
+	public ShowBase(Book b, List<String> l, RawScreenSize r, String be) {
 		book = b;
 		pageList = l;
 		rawSize = r;
+		blankExtension = be;
 		calcIdx = new CalcIndex(pageList.size(), 1);
 	}
 	
@@ -70,5 +72,9 @@ public class ShowBase {
 
 	protected void toBackward() {
 		idx = calcIdx.wrapBackward(idx);
+	}
+	
+	protected String getNextPpath(int add) {
+		return getPname(idx + add);
 	}
 }

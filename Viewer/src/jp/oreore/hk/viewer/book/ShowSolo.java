@@ -13,8 +13,8 @@ import jp.oreore.hk.screen.RawScreenSize;
 public class ShowSolo extends ShowBase implements IPageShower {
 	private ImageView imageView;
 	
-	public ShowSolo(Book b, List<String> l, RawScreenSize r, ImageView v) {
-		super(b, l, r);
+	public ShowSolo(Book b, List<String> l, RawScreenSize r, ImageView v, String be) {
+		super(b, l, r, be);
 		imageView = v;
 	}
 
@@ -57,15 +57,30 @@ public class ShowSolo extends ShowBase implements IPageShower {
 	public Iterator<Pair<String, ImageView>> iterator() {
 		return new Iter();
 	}
+	
+	@Override
+	public String getNextPpath() {
+		String ret = super.getNextPpath(1);
+		if(ret.endsWith(blankExtension)) {
+			ret = super.getNextPpath(2);
+		}
+		return ret;
+	}
 
 	@Override
 	public void turnToForward() {
 		toForward();
+		if(super.getCurrentPpath().endsWith(blankExtension)) {
+			toForward();
+		}
 	}
 
 	@Override
 	public void turnToBackward() {
 		toBackward();
+		if(super.getCurrentPpath().endsWith(blankExtension)) {
+			toBackward();
+		}
 	}
 
 	@Override

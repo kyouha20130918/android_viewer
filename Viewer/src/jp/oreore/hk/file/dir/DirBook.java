@@ -2,6 +2,7 @@ package jp.oreore.hk.file.dir;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
@@ -87,6 +88,7 @@ public class DirBook extends DirBase {
 		for(File f : list) {
 			ret.add(f.getAbsolutePath());
 		}
+		Collections.sort(ret);
 		return ret;
 	}
 
