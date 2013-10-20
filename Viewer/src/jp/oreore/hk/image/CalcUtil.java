@@ -151,4 +151,14 @@ public class CalcUtil {
 			adjustHeight(fresult, sresult.fitSize.height);
 		}
 	}
+
+	public static void getFitSizeForSolo(CalcResult result) {
+		ImageSize screenSize = new ImageSize();
+		screenSize.width = result.rawSize.width * 2;
+		screenSize.height = result.rawSize.height;
+		
+		ImageSize fitSize = calcFitSize(screenSize, result.orgSize, result.expand);
+		result.fitSize.width = fitSize.width;
+		result.fitSize.height = fitSize.height;
+	}
 }

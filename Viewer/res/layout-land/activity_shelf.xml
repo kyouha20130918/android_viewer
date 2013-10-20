@@ -45,7 +45,7 @@
 	    	    
 	    <ImageView
 	        android:id="@+id/imageViewCoverLandLeft"
-	        android:layout_width="wrap_content"
+	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
 	        android:contentDescription="@string/description_book_cover" />
 
@@ -60,7 +60,7 @@
 	    	    
 	    <ImageView
 	        android:id="@+id/imageViewCoverLandRight"
-	        android:layout_width="wrap_content"
+	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
 	        android:contentDescription="@string/description_book_cover" />
     
@@ -77,7 +77,7 @@
 
     <ImageView
         android:id="@+id/imageViewCoverLandCenter"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/description_book_cover" />
     

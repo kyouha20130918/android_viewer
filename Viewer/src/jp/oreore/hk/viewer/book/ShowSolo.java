@@ -21,6 +21,9 @@ public class ShowSolo extends ShowBase implements IPageShower {
 	@Override
 	public void setFirst(int i) {
 		setIdx(i);
+		while(isBlankPage(super.getCurrentPpath())) {
+			toForward();
+		}
 	}
 	
 	@Override
@@ -61,7 +64,7 @@ public class ShowSolo extends ShowBase implements IPageShower {
 	@Override
 	public String getNextPpath() {
 		String ret = super.getNextPpath(1);
-		if(ret.endsWith(blankExtension)) {
+		if(isBlankPage(ret)) {
 			ret = super.getNextPpath(2);
 		}
 		return ret;
@@ -70,7 +73,7 @@ public class ShowSolo extends ShowBase implements IPageShower {
 	@Override
 	public void turnToForward() {
 		toForward();
-		if(super.getCurrentPpath().endsWith(blankExtension)) {
+		while(isBlankPage(super.getCurrentPpath())) {
 			toForward();
 		}
 	}
@@ -78,7 +81,7 @@ public class ShowSolo extends ShowBase implements IPageShower {
 	@Override
 	public void turnToBackward() {
 		toBackward();
-		if(super.getCurrentPpath().endsWith(blankExtension)) {
+		while(isBlankPage(super.getCurrentPpath())) {
 			toBackward();
 		}
 	}

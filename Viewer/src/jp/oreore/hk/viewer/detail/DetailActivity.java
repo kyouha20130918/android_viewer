@@ -175,12 +175,22 @@ public class DetailActivity extends Activity implements OnClickListener, IMarkEd
     	pubdate.setText(currentBook.getColophon().getPubdate());
 
     	TextView pagename = (TextView)findViewById(R.id.textValuePageName);
-    	pagename.setText(currentPageName);
+    	String pnm = currentPageName;
+    	String blankExtension = getString(R.string.blank_page_extension);
+    	String blankPageName = getString(R.string.blank_page_name);
+    	boolean isBlank = false;
+    	if(pnm.endsWith(blankExtension)) {
+    		pnm = blankPageName;
+    		isBlank = true;
+    	}
+    	pagename.setText(pnm);
     	Button btn = (Button)findViewById(R.id.buttonMark);
     	Mark cur = currentNote.getMark(currentPageName);
-    	if(cur != null) {
+    	if(cur != null || isBlank) {
         	EditText comment = (EditText)findViewById(R.id.textValueMarkComment);
-        	comment.setText(cur.getComment());
+        	if(cur != null) {
+            	comment.setText(cur.getComment());
+        	}
         	comment.setEnabled(false);
         	btn.setEnabled(false);
     	} else {

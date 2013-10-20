@@ -77,4 +77,8 @@ public class ShowBase {
 	protected String getNextPpath(int add) {
 		return getPname(idx + add);
 	}
+	
+	protected boolean isBlankPage(String path) {
+		return path.endsWith(blankExtension);
+	}
 }

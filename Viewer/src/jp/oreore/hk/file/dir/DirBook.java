@@ -24,7 +24,6 @@ public class DirBook extends DirBase {
 		public String sleeveFrontPart;
 		public String sleeveRearPart;
 		public String imageExtension;
-		public String blankFname;
 		public String blankExtension;
 	}
 	
@@ -41,7 +40,6 @@ public class DirBook extends DirBase {
 		fnameParts.sleeveFrontPart = con.getString(R.string.fixed_part_sleevefront_fname);
 		fnameParts.sleeveRearPart = con.getString(R.string.fixed_part_sleeverear_fname);
 		fnameParts.imageExtension = con.getString(R.string.fixed_expression_image_extension);
-		fnameParts.blankFname = con.getString(R.string.blank_page_fname);
 		fnameParts.blankExtension = con.getString(R.string.blank_page_extension);
 	}
 	
@@ -130,31 +128,31 @@ public class DirBook extends DirBase {
 	
 	public List<String> getPageList(ITaskStatusChecker checker) {
 		List<String> list = new ArrayList<String>();
-		String blankFnm = fnameParts.blankFname + fnameParts.blankExtension;
 		list.add(getCoverFrontFname());
 		String fnm = getSleeveFrontFname();
 		if(TextUtils.isEmpty(fnm)) {
-			fnm = blankFnm;
+			fnm = book.getAttributes().getCoverImagePrefix() + fnameParts.sleeveFrontPart + fnameParts.blankExtension;
 		}
 		list.add(fnm);
 		fnm = book.getAttributes().getSearchPagenoFormat() + fnameParts.imageExtension;
 		List<String> plist = getFnameDeeply(fnm, checker);
 		list.addAll(plist);
 		fnm = getSleeveRearFname();
+		String sleeveRearBlankFnm = book.getAttributes().getCoverImagePrefix() + fnameParts.sleeveRearPart + fnameParts.blankExtension;
 		if((plist.size() % 2) != 0) {
 			if(!TextUtils.isEmpty(fnm)) {
-				list.add(blankFnm);
+				list.add(sleeveRearBlankFnm);
 				list.add(fnm);
 			}
 		} else {
 			if(TextUtils.isEmpty(fnm)) {
-				fnm = blankFnm;
+				fnm = sleeveRearBlankFnm;
 			}
 			list.add(fnm);
 		}
 		fnm = getCoverRearFname();
 		if(TextUtils.isEmpty(fnm)) {
-			fnm = blankFnm;
+			fnm = book.getAttributes().getCoverImagePrefix() + fnameParts.coverRearPart + fnameParts.blankExtension;
 		}
 		list.add(fnm);
 		return list;

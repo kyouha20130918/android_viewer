@@ -86,6 +86,9 @@ public class LogicPage implements IPagesMaker {
 			return;
 		}
 		String pnm = book.getPath() + m.getPageName();
+		if(m.getPageName().endsWith(blankExtension)) {
+			pnm = m.getPageName();
+		}
 		for(int i = 0; i < pageList.size(); i ++) {
 			if(pnm.equals(pageList.get(i))) {
 				pageIdx = i;
@@ -196,9 +199,6 @@ public class LogicPage implements IPagesMaker {
 		}
 		String pnm = pageList.get(idx);
 		String info = pnm.replace(book.getPath(), "");
-		if(pnm.endsWith(blankExtension)) {
-			info = "(blank)";
-		}
 		return info;
 	}
 	

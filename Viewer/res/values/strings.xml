@@ -37,7 +37,6 @@
     <string name="fixed_part_coverrear_fname">02</string>
     <string name="fixed_part_sleevefront_fname">03</string>
     <string name="fixed_part_sleeverear_fname">04</string>
-    <string name="blank_page_fname">blank</string>
     <string name="blank_page_extension">\\.blank</string>
     <string name="limit_ratio_show_solo_in_landscape">1.1</string>
     <string name="shorter_ratio_of_width_in_landscape">0.6</string>
@@ -54,5 +53,6 @@
     <string name="detail_title_curpage_name">Current Page</string>
     <string name="detail_button_mark">Mark</string>
     <string name="marklist_button_delete">Delete</string>
+    <string name="blank_page_name">(blank)</string>
     
 </resources>

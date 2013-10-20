@@ -26,6 +26,8 @@ public class PageJumpDialog extends DialogFragment {
 	private SeekBar seekbar;
 	private TextView pageinfo;
 	private MarksAdapter adapter;
+	private String blankExtension;
+	private String blankPageName;
 	
 	public static PageJumpDialog newInstance(IPageTurner t, Note n) {
 		PageJumpDialog dialog = new PageJumpDialog();
@@ -48,7 +50,11 @@ public class PageJumpDialog extends DialogFragment {
 		}
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-			pageinfo.setText(turner.getPageInfo(progress));
+			String pnm = turner.getPageInfo(progress);
+			if(pnm.endsWith(blankExtension)) {
+				pnm = blankPageName;
+			}
+			pageinfo.setText(pnm);
 		}
 	}
 	
@@ -66,6 +72,9 @@ public class PageJumpDialog extends DialogFragment {
     	LayoutInflater inflater = LayoutInflater.from(getActivity());
     	View dialogView = inflater.inflate(R.layout.dialog_pagejump, null);
     	
+		blankExtension = getString(R.string.blank_page_extension);
+		blankPageName = getString(R.string.blank_page_name);
+		
     	int curIdx = turner.getCurrentIdx();
     	pageinfo = (TextView)dialogView.findViewById(R.id.pageInfo);
 		pageinfo.setText(turner.getPageInfo(curIdx));

@@ -51,39 +51,54 @@ public class ShowTwin extends ShowBase implements IPageShower {
 		showQueue = new LinkedList<QueueItem>();
 		limitRatioForSolo = limit;
 		shorterRatioOfWidth = shorter;
-		blankExtension = be;
 		showSolo = false;
 	}
-	
-	private void setQueue() {
+
+	// return true if setting complete.
+	private boolean setQueue() {
 		showSolo = false;
 		String ppath = getCurrentPpath();
 		CalcResult presult = new CalcResult(rawSize, ppath);
 		boolean shouldBeSolo = isImageShouldBeSolo(presult, limitRatioForSolo);
 		if(shouldBeSolo) {
+			CalcUtil.getFitSizeForSolo(presult);
 			showQueue.offer(new QueueItem(PagePos.Center, presult));
 			showSolo = true;
-		} else {
-			PagePos pos = getCurrentPagePos();
-			
-			String opath = getPname(getOpositePageIdx());
-			CalcResult oresult = new CalcResult(rawSize, opath);
-			
-			if(!presult.path.endsWith(blankExtension)
-					&& !oresult.path.endsWith(blankExtension)
-					&& presult.fitSize.height != oresult.fitSize.height) {
-				CalcUtil.adjustHeight(presult, oresult);
-			}
-			
-			showQueue.offer(new QueueItem(pos, presult));
-			showQueue.offer(new QueueItem(getOpositePagePos(), oresult));
+			return true;
 		}
+		PagePos pos = getCurrentPagePos();
+		
+		String opath = getPname(getOpositePageIdx());
+		if(isBlankPage(ppath) && isBlankPage(opath)) {
+			// skip blank page
+			return false;
+		}
+		
+		CalcResult oresult = new CalcResult(rawSize, opath);
+		boolean oShouldBeSolo = isImageShouldBeSolo(oresult, limitRatioForSolo);
+		if(isBlankPage(ppath) && oShouldBeSolo) {
+			// skip blank page
+			return false;
+		}
+		
+		if(!oShouldBeSolo
+				&& !isBlankPage(ppath)
+				&& !isBlankPage(opath)
+				&& presult.fitSize.height != oresult.fitSize.height) {
+			CalcUtil.adjustHeight(presult, oresult);
+		}
+		
+		showQueue.offer(new QueueItem(pos, presult));
+		showQueue.offer(new QueueItem(getOpositePagePos(), oresult));
+		return true;
 	}
 
 	@Override
 	public void setFirst(int i) {
 		setIdx(i);
-		setQueue();
+		while(!setQueue()) {
+			toForward();
+		}
 	}
 
 	@Override
@@ -112,7 +127,7 @@ public class ShowTwin extends ShowBase implements IPageShower {
 		int right = 0;
 		boolean shorter = isImageWidthShorter(result, shorterRatioOfWidth);
 		if(shorter) {
-			int marginWidth = rawSize.width / 3;;
+			int marginWidth = rawSize.width / 6;
 			if(isPageShowLeft(pos)) {
 				right = marginWidth;
 			} else {
@@ -146,6 +161,7 @@ public class ShowTwin extends ShowBase implements IPageShower {
 				boolean shouldBeSolo = isImageShouldBeSolo(result, limitRatioForSolo);
 				if(shouldBeSolo) {
 					path = blankExtension;
+					showSolo = true;
 				} else {
 					path = getPname(getOpositePageIdx());
 				}
@@ -177,7 +193,7 @@ public class ShowTwin extends ShowBase implements IPageShower {
 			}
 		}
 		String ret = super.getNextPpath(nidx);
-		if(ret.endsWith(blankExtension)) {
+		if(isBlankPage(ret)) {
 			ret = super.getNextPpath(nidx + 1);
 		}
 		return ret;
@@ -189,7 +205,9 @@ public class ShowTwin extends ShowBase implements IPageShower {
 		if(!showSolo) {
 			toForward();
 		}
-		setQueue();
+		while(!setQueue()) {
+			toForward();
+		}
 	}
 
 	@Override
@@ -198,7 +216,9 @@ public class ShowTwin extends ShowBase implements IPageShower {
 		if(!showSolo) {
 			toBackward();
 		}
-		setQueue();
+		while(!setQueue()) {
+			toBackward();
+		}
 	}
 
 	@Override
