@@ -15,14 +15,16 @@ public class ShelfCoverGesture extends GestureDetector.SimpleOnGestureListener
 
 	GestureDetector detector;
 	IShelfSwitcher switcher;
+	int minMoveLen;
 
 	public ShelfCoverGesture() {
 		super();
 	}
 	
-	public ShelfCoverGesture(Context context, IShelfSwitcher s) {
+	public ShelfCoverGesture(Context context, IShelfSwitcher s, int m) {
 		detector = new GestureDetector(context, this);
 		switcher = s;
+		minMoveLen = m;
 	}
 
 	@Override
@@ -33,7 +35,11 @@ public class ShelfCoverGesture extends GestureDetector.SimpleOnGestureListener
 	@Override
 	public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
         //Log.d(TAG, "onFling:" + event1.toString() + ", " + event2.toString() + ", velocity=[" + velocityX + ", " + velocityY + "]"); 
-    	double angle = GestureUtil.getAngle(event1, event2);
+    	double angle = GestureUtil.getAngle(event1, event2, minMoveLen);
+    	if(angle < 0.0d) {
+            Log.d(TAG, "flinged, but too short. so ignored.");
+    		return true;
+    	}
     	FlingDirection d = GestureUtil.toWhereFling(angle);
         Log.d(TAG, "flinged " + d.toString());
         

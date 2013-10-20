@@ -88,7 +88,8 @@ public abstract class LogicBase implements IBooksMaker, AdapterView.OnItemClickL
 		AdapterView<ListAdapter> listview = getListView();
 		listview.setAdapter(adapter);
     	listview.setOnItemClickListener(this);
-    	gesture = new ShelfBacksGesture(activity, this);
+    	int minMoveLen = Integer.parseInt(activity.getString(R.string.min_move_pixel_of_fling));
+    	gesture = new ShelfBacksGesture(activity, this, minMoveLen);
     	listview.setOnTouchListener(gesture);
     	
     	coverShower = makeCoverShower();
@@ -221,10 +222,11 @@ public abstract class LogicBase implements IBooksMaker, AdapterView.OnItemClickL
 	
 	protected ICoverShower makeCoverShower() {
 		ICoverShower ret = null;
+    	int minMoveLen = Integer.parseInt(activity.getString(R.string.min_move_pixel_of_fling));
 		if(ViewerUtil.OrientationMode.Portrait == ViewerUtil.getOrientationMode(activity)) {
-			ret = new CoverShowerPort(activity, imageFetcher, this);
+			ret = new CoverShowerPort(activity, imageFetcher, this, minMoveLen);
 		} else {
-			ret = new CoverShowerLand(activity, imageFetcher, this);
+			ret = new CoverShowerLand(activity, imageFetcher, this, minMoveLen);
 		}
 		return ret;
 	}

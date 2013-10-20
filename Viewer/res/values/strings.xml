@@ -26,6 +26,7 @@
     <string name="min_pixel_of_backface_width">50</string>
     <string name="logical_max_height_of_backface_in_inchi">8</string>
     <string name="dpi_of_backface">200</string>
+    <string name="min_move_pixel_of_fling">50</string>
     <string name="description_book_backface">Book\' Back Face</string>
     <string name="description_book_cover">Book\' Cover</string>
     <string name="title_activity_book">Book</string>

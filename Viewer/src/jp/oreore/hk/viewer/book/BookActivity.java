@@ -62,7 +62,8 @@ public class BookActivity extends Activity implements IPageTurner {
 			finish();
 			return;
 		}
-		detector = new GestureDetector(this, new PageGesture(this, currentBook.isR2L(), rawSize));
+    	int minMoveLen = Integer.parseInt(getString(R.string.min_move_pixel_of_fling));
+		detector = new GestureDetector(this, new PageGesture(this, currentBook.isR2L(), rawSize, minMoveLen));
 	}
 	
 	@Override

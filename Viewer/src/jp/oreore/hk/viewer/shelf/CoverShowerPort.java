@@ -16,8 +16,8 @@ import jp.oreore.hk.viewer.ViewerUtil;
 
 public class CoverShowerPort extends CoverShowerBase implements ICoverShower {
 
-	public CoverShowerPort(Activity act, ImageFetcher f, IShelfSwitcher s) {
-		super(act, f, s);
+	public CoverShowerPort(Activity act, ImageFetcher f, IShelfSwitcher s, int minMoveLen) {
+		super(act, f, s, minMoveLen);
 		setGestureListener(getLayout());
 	}
 	

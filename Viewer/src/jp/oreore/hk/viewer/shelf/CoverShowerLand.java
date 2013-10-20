@@ -17,8 +17,9 @@ import jp.oreore.hk.viewer.R;
 import jp.oreore.hk.viewer.ViewerUtil;
 
 public class CoverShowerLand extends CoverShowerBase implements ICoverShower {
-	public CoverShowerLand(Activity act, ImageFetcher f, IShelfSwitcher s) {
-		super(act, f, s);
+	
+	public CoverShowerLand(Activity act, ImageFetcher f, IShelfSwitcher s, int minMoveLen) {
+		super(act, f, s, minMoveLen);
 		setGestureListener(getLayoutTwin());
 		setGestureListener(getLayoutSolo());
 	}

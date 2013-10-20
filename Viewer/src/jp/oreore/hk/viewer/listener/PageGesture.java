@@ -21,11 +21,13 @@ public class PageGesture extends GestureDetector.SimpleOnGestureListener {
     private IPageTurner turner;
     private boolean isR2L;
 	private RawScreenSize rawSize;
+	int minMoveLen;
     
-    public PageGesture(IPageTurner t, boolean r2l, RawScreenSize r) {
+    public PageGesture(IPageTurner t, boolean r2l, RawScreenSize r, int m) {
     	turner = t;
     	isR2L = r2l;
     	rawSize = r;
+		minMoveLen = m;
     }
     
     @Override
@@ -37,7 +39,11 @@ public class PageGesture extends GestureDetector.SimpleOnGestureListener {
     @Override
     public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
         //Log.d(TAG, "onFling:" + event1.toString() + ", " + event2.toString() + ", velocity=[" + velocityX + ", " + velocityY + "]"); 
-    	double angle = GestureUtil.getAngle(event1, event2);
+    	double angle = GestureUtil.getAngle(event1, event2, minMoveLen);
+    	if(angle < 0.0d) {
+            Log.d(TAG, "flinged, but too short. so change to singleTapUp.");
+    		return onSingleTapUp(event1);
+    	}
     	FlingDirection d = GestureUtil.toWhereFling(angle);
         Log.d(TAG, "flinged " + d.toString());
 

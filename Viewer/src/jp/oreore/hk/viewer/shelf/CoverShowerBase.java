@@ -12,11 +12,11 @@ public class CoverShowerBase {
 	protected IShelfSwitcher switcher;
 	protected ShelfCoverGesture gesture;
 
-	public CoverShowerBase(Activity act, ImageFetcher f, IShelfSwitcher s) {
+	public CoverShowerBase(Activity act, ImageFetcher f, IShelfSwitcher s, int minMoveLen) {
 		activity = act;
 		imageFetcher = f;
 		switcher = s;
-		gesture = new ShelfCoverGesture(activity, switcher);
+		gesture = new ShelfCoverGesture(activity, switcher, minMoveLen);
 	}
 	
 	protected void setGestureListener(LinearLayout layout) {

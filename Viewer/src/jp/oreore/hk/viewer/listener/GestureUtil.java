@@ -14,9 +14,13 @@ public class GestureUtil {
 		NoMean
 	}
 
-    public static double getAngle(MotionEvent event1, MotionEvent event2) {
+	// return minus if move shorter than minMoveLen
+    public static double getAngle(MotionEvent event1, MotionEvent event2, int minMoveLen) {
         float moveX = event2.getRawX() - event1.getRawX();
         float moveY = event2.getRawY() - event1.getRawY();
+        if((1.0f * minMoveLen * minMoveLen) > (moveX * moveX + moveY * moveY)) {
+        	return -1.0d;
+        }
         double sita = Math.atan2(moveY, moveX);
         double angle = Math.toDegrees(sita);
         if(angle < 0.0) {

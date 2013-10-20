@@ -341,7 +341,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
             	break;
             }
 		}
-		return idx;
+		return (idx < 0 ? idx : (mLeftViewIndex + 1 + idx));
 	}
 	
 	private OnGestureListener mOnGesture = new GestureDetector.SimpleOnGestureListener() {
