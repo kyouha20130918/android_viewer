@@ -79,8 +79,11 @@ public class DetailActivity extends Activity implements OnClickListener, IMarkEd
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		Log.d(TAG, "onCreateOptionsMenu Start.");
+		
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.detail, menu);
+		
 		return true;
 	}
 
@@ -88,6 +91,10 @@ public class DetailActivity extends Activity implements OnClickListener, IMarkEd
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case android.R.id.home:
+        	backToBook();
+        	finish();
+            return true;
+        case R.id.action_toBook:
         	backToBook();
         	finish();
             return true;

@@ -133,6 +133,10 @@ public class BookActivity extends Activity implements IPageTurner {
     		needWriteLibrary = true;
     		finish();
     		return true;
+        case R.id.action_toShelf:
+        	backToShelf();
+        	finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

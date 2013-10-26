@@ -193,6 +193,10 @@ public class ShelfActivity extends Activity
     		needWriteLibrary = true;
     		finish();
     		return true;
+    	case R.id.action_toLibrary:
+        	backToLibrary();
+        	finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -380,4 +384,11 @@ public class ShelfActivity extends Activity
     public void setBacksIndex(int idx) {
     	viewIndex = idx;
     }
+    
+    // IBookOpener
+    public void viewLibrary() {
+		backToLibrary();
+		finish();
+    }
+
 }

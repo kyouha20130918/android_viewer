@@ -6,6 +6,12 @@
         android:showAsAction="never"
         android:title="@string/action_finish"/>
 
+    <item
+        android:id="@+id/action_toLibrary"
+        android:orderInCategory="110"
+        android:showAsAction="never"
+        android:title="@string/action_toLibrary"/>
+    
     <item android:id="@+id/search"
           android:title="@string/search_title"
           android:icon="@android:drawable/ic_menu_search"

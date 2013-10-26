@@ -8,4 +8,5 @@ public interface IBookOpener {
 	void openBook(Book b);
 	void setViewMode(ViewerUtil.ShelfViewMode mode);
 	void setBacksIndex(int idx);
+	void viewLibrary();
 }

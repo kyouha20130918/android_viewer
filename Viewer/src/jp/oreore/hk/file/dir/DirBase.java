@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import jp.oreore.hk.iface.ITaskStatusChecker;
@@ -63,6 +64,13 @@ public abstract class DirBase {
 		}
 	}
 	
+	static class FileSorter implements Comparator<File> {
+		@Override
+		public int compare(File s, File t) {
+			return s.getAbsolutePath().compareTo(t.getAbsolutePath());
+		}
+	}
+
 	private void selectDirRecursively(File current, List<File> ret, DirFilter filter, int maxCnt, ITaskStatusChecker checker) {
 		if(checker.shouldBeBreak()) {
 			return;

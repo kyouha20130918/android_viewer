@@ -3,7 +3,6 @@ package jp.oreore.hk.file.dir;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import android.text.TextUtils;
@@ -71,13 +70,6 @@ public class DirShelf extends DirBase {
 		}
 	}
 	
-	class FileSorter implements Comparator<File> {
-		@Override
-		public int compare(File s, File t) {
-			return s.getAbsolutePath().compareTo(t.getAbsolutePath());
-		}
-	}
-
 	public List<Book> getBooks() {
 		List<File> list = selectDirDeeply(new BookFilter(), maxSearchCount, checker);
 		Collections.sort(list, new FileSorter());

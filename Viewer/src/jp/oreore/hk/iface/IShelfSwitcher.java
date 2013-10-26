@@ -7,4 +7,5 @@ public interface IShelfSwitcher {
 	void viewBook();
 	void forwardCover();
 	void backwardCover();
+	void viewLibrary();
 }

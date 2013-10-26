@@ -7,6 +7,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.app.Activity;
 import android.content.Intent;
@@ -36,10 +37,24 @@ public class SettingsActivity extends Activity {
 	// for menu
 	//
 	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		Log.d(TAG, "onCreateOptionsMenu Start.");
+		
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.settings, menu);
+		
+		return true;
+	}
+	
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case android.R.id.home:
+        	backToLibrary();
+        	finish();
+            return true;
+    	case R.id.action_toLibrary:
         	backToLibrary();
         	finish();
             return true;

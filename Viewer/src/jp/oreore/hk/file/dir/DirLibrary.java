@@ -2,6 +2,8 @@ package jp.oreore.hk.file.dir;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import jp.oreore.hk.json.obj.Shelf;
@@ -36,7 +38,9 @@ public class DirLibrary extends DirBase {
 
 	public boolean isValid() {
 		if(!checked) {
-			flist = select(new ShelfFilter());
+			List<File> list = Arrays.asList(select(new ShelfFilter()));
+			Collections.sort(list, new FileSorter());
+			flist = list.toArray(new File[0]);
 			checked = true;
 		}
 		return (flist != null && flist.length > 0);

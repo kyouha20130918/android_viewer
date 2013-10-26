@@ -383,4 +383,10 @@ public abstract class LogicBase implements IBooksMaker, AdapterView.OnItemClickL
     	coverShower.showCover(getBookAt(nextIdx), rawSize);
 	}
 
+	// IShelfSwitcher
+    public void viewLibrary() {
+		if(activity instanceof IBookOpener) {
+			((IBookOpener)activity).viewLibrary();
+		}
+    }
 }

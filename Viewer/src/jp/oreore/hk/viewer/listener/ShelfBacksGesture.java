@@ -47,6 +47,8 @@ public class ShelfBacksGesture extends GestureDetector.SimpleOnGestureListener
         	int posx = Math.round(event1.getX());
         	int posy = Math.round(event1.getY());
         	switcher.viewCover(posx, posy);
+        } else if(FlingDirection.Up == d) {
+        	switcher.viewLibrary();
         }
         
         return true;
