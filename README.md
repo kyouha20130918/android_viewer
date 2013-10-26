@@ -1,6 +1,6 @@
 android_viewer
 ==============
-Released version 1.0.4 at 2013/10/20.
+Released version 1.0.5 at 2013/10/26.
 
 This application requires Android 4.0.3 and up.
 
