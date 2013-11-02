@@ -14,6 +14,7 @@ import android.util.Pair;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import jp.oreore.hk.file.FileUtil;
 import jp.oreore.hk.iface.IPageShower;
 import jp.oreore.hk.image.CalcUtil;
 import jp.oreore.hk.image.ImageSize;
@@ -125,14 +126,17 @@ public class ShowTwin extends ShowBase implements IPageShower {
 	private void setImageViewMargin(PagePos pos, CalcResult result, ImageView v) {
 		int left = 0;
 		int right = 0;
+		int marginWidth = 0;
 		boolean shorter = isImageWidthShorter(result, shorterRatioOfWidth);
 		if(shorter) {
-			int marginWidth = rawSize.width / 6;
-			if(isPageShowLeft(pos)) {
-				right = marginWidth;
-			} else {
-				left = marginWidth;
-			}
+			marginWidth = rawSize.width / 6;
+		} else if(!FileUtil.isCover(result.path, book)) {
+			marginWidth = 10;
+		}
+		if(isPageShowLeft(pos)) {
+			right = marginWidth;
+		} else {
+			left = marginWidth;
 		}
 		ImageSize fit = result.fitSize;
 		MarginLayoutParams mparams = new MarginLayoutParams(v.getLayoutParams());
