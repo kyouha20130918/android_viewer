@@ -5,7 +5,7 @@ import java.util.List;
 
 import jp.oreore.hk.iface.IShelvesMaker;
 import jp.oreore.hk.json.obj.Shelf;
-import jp.oreore.hk.types.ItemType;
+import jp.oreore.hk.types.ViewType;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -104,7 +104,7 @@ public abstract class TabFragment extends Fragment
     //
     
     abstract int getLayoutId();
-    abstract ItemType getItemType();
+    abstract ViewType getItemType();
     
     //
     // interface

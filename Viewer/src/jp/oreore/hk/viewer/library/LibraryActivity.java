@@ -13,7 +13,7 @@ import jp.oreore.hk.iface.ITabSelectedInform;
 import jp.oreore.hk.json.obj.Library;
 import jp.oreore.hk.json.obj.Shelf;
 import jp.oreore.hk.task.ShelfInfoReader;
-import jp.oreore.hk.types.ItemType;
+import jp.oreore.hk.types.ViewType;
 import jp.oreore.hk.types.PageType;
 import jp.oreore.hk.viewer.R;
 import jp.oreore.hk.viewer.ViewerUtil;
@@ -425,14 +425,14 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
     		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
     		setAccessLibraryBtn(ViewerUtil.Display.ON);
     	} else if(!isModeTabs && ViewerUtil.NavMode.Tabs == m) {
-    		ItemType it = currentPosition.getTab();	// backup
+    		ViewType it = currentPosition.getTab();	// backup
     		setAccessLibraryBtn(ViewerUtil.Display.OFF);
-    		String tabNameBook = ItemType.Book.toString();
+    		String tabNameBook = ViewType.Book.toString();
     		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 	        actionBar.addTab(actionBar.newTab()
 	        		 .setText(tabNameBook)
 	                 .setTabListener(new TabListener<TabBookFragment>(this, tabNameBook, TabBookFragment.class)));
-       		String tabNameHtml = ItemType.Html.toString();
+       		String tabNameHtml = ViewType.Html.toString();
    	        actionBar.addTab(actionBar.newTab()
 	        		 .setText(tabNameHtml)
    	                 .setTabListener(new TabListener<TabHtmlFragment>(this, tabNameHtml, TabHtmlFragment.class)));
@@ -471,13 +471,13 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
     // ITabSelectedInform
     public void informTabSelected(Tab t) {
     	String tabText = (String)t.getText();
-    	ItemType it = ItemType.of(tabText);
+    	ViewType it = ViewType.of(tabText);
     	currentPosition.setTab(it);
     	Log.d(TAG, "tab selected.[" + it.toString() + "]");
     }
 
     // IShelfMaker
-    public List<Shelf> getShelfList(ItemType it) {
+    public List<Shelf> getShelfList(ViewType it) {
     	List<Shelf> ret = new ArrayList<Shelf>();
     	synchronized(foundShelves) {
     		Iterator<Shelf> itr = foundShelves.iterator();
@@ -498,7 +498,7 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
     // at shelf-make complete or not
     private enum Complete { AtComplete, AtOther };
     // re-make view item
-    private void resetItem(ItemType it, Complete c) {
+    private void resetItem(ViewType it, Complete c) {
     	tabAdapter.clear();
     	List<Shelf> ret = getShelfList(it);
     	for(int i = 0; i < ret.size(); i ++) {
@@ -518,7 +518,7 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
     }
     
     // IShelfMaker
-    public void registerTabInfo(ArrayAdapter<String> a, ItemType i) {
+    public void registerTabInfo(ArrayAdapter<String> a, ViewType i) {
     	tabAdapter = a;
 		resetItem(i, Complete.AtOther);
     }
@@ -533,7 +533,7 @@ public class LibraryActivity extends Activity implements ITabSelectedInform, ISh
     }
     
     // IShelfMaker
-    public void informSelectedShelf(int pos, ItemType i) {
+    public void informSelectedShelf(int pos, ViewType i) {
     	List<Shelf> ret = getShelfList(i);
     	Shelf s = ret.get(pos);
     	callShelfForDirectly(s.getPath(), SetNextPageType.Yes);

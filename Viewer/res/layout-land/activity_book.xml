@@ -64,4 +64,32 @@
     
 </LinearLayout>
 
+<LinearLayout
+    android:id="@+id/LinearLayout3"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/imageViewBookPageGtxtLandscape"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:contentDescription="@string/description_page" />
+
+    <ScrollView
+        android:id="@+id/scrollViewBookPageGtxtLandscape"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+        android:id="@+id/textViewBookPageGtxtLandscape"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="" />
+
+    </ScrollView>
+	
+</LinearLayout>
+
 </FrameLayout>

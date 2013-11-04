@@ -23,9 +23,9 @@ public class PageGesture extends GestureDetector.SimpleOnGestureListener {
 	private RawScreenSize rawSize;
 	int minMoveLen;
     
-    public PageGesture(IPageTurner t, boolean r2l, RawScreenSize r, int m) {
+    public PageGesture(IPageTurner t, RawScreenSize r, int m) {
     	turner = t;
-    	isR2L = r2l;
+    	isR2L = t.isR2L();
     	rawSize = r;
 		minMoveLen = m;
     }
@@ -53,9 +53,11 @@ public class PageGesture extends GestureDetector.SimpleOnGestureListener {
         	forward = FlingDirection.Right;
         	backwrad = FlingDirection.Left;
         }
-    	if(FlingDirection.Up == d) {
+        boolean allowUpDown = GestureUtil.allowUpDownFling(event1, turner.getStartYForAllowUpDownFling());
+        
+    	if(FlingDirection.Up == d && allowUpDown) {
     		turner.moveToBack();
-    	} else if(FlingDirection.Down == d) {
+    	} else if(FlingDirection.Down == d && allowUpDown) {
     		turner.moveToDetail();
     	} else if(forward == d) {
     		turner.turnPageToForward();

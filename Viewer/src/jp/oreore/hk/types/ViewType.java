@@ -1,17 +1,15 @@
 package jp.oreore.hk.types;
 
-public enum ItemType {
+public enum ViewType {
 	Book("book"),
-	Gtxt("gtxt"),
 	Html("html"),
-	Pdf("pdf"),
 	;
 	private String typ;
-	private ItemType(String s) {
+	private ViewType(String s) {
 		typ = s;
 	}
-	public static ItemType of(String s) {
-		for(ItemType i : ItemType.values()) {
+	public static ViewType of(String s) {
+		for(ViewType i : ViewType.values()) {
 			if(i.typ.equals(s)) {
 				return i;
 			}

@@ -2,7 +2,7 @@ package jp.oreore.hk.json.obj;
 
 import jp.oreore.hk.json.Entry;
 import jp.oreore.hk.json.JsonUtil;
-import jp.oreore.hk.types.ItemType;
+import jp.oreore.hk.types.ViewType;
 import jp.oreore.hk.types.PageType;
 
 import org.json.JSONException;
@@ -48,13 +48,13 @@ public class Library {
 	}
 	
 	public PageType getPage()  { String s = page.get(self); return PageType.of(s); }
-	public ItemType getTab() { String s = tab.get(self); return ItemType.of(s); }
+	public ViewType getTab() { String s = tab.get(self); return ViewType.of(s); }
 	public String getShelfPath() { return shelf.get(self); }
 	public String getSearchCondition() { return search.get(self); }
 	public String getBookPath() { return book.get(self); }
 
 	public void setPage(PageType u) { page.set(self, u.toString()); }
-	public void setTab(ItemType u) { tab.set(self, u.toString()); }
+	public void setTab(ViewType u) { tab.set(self, u.toString()); }
 	public void setShelfPath(String u) { shelf.set(self, u); }
 	public void setSearchCondition(String u) { search.set(self, u); }
 	public void setBookPath(String u) { book.set(self, u); }

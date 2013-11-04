@@ -63,7 +63,7 @@ public class BookActivity extends Activity implements IPageTurner {
 			return;
 		}
     	int minMoveLen = Integer.parseInt(getString(R.string.min_move_pixel_of_fling));
-		detector = new GestureDetector(this, new PageGesture(this, currentBook.isR2L(), rawSize, minMoveLen));
+		detector = new GestureDetector(this, new PageGesture(this, rawSize, minMoveLen));
 	}
 	
 	@Override
@@ -307,5 +307,8 @@ public class BookActivity extends Activity implements IPageTurner {
 	}
 	public boolean isR2L() {
 		return currentBook.isR2L();
+	}
+	public int getStartYForAllowUpDownFling() {
+		return logic.getAllowFlingLimit();
 	}
 }

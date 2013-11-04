@@ -19,4 +19,16 @@ public class FileUtil {
 		}
 		return false;
 	}
+	
+	public static String getExcludeExtentionName(String path) {
+		File f = new File(path);
+		String fnm = f.getName();
+		String pnm = f.getParent();
+		String bnm = fnm.replaceAll("[.][^.]+$", "");
+		return pnm + System.getProperty("file.separator") + bnm;
+	}
+	
+	public static boolean existsFile(String path) {
+		return (new File(path)).exists();
+	}
 }

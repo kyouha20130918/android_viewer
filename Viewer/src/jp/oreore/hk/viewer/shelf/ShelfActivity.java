@@ -6,7 +6,6 @@ import jp.oreore.hk.iface.IBookOpener;
 import jp.oreore.hk.iface.IShelfLogic;
 import jp.oreore.hk.json.obj.Book;
 import jp.oreore.hk.json.obj.Library;
-import jp.oreore.hk.types.ItemType;
 import jp.oreore.hk.types.PageType;
 import jp.oreore.hk.viewer.R;
 import jp.oreore.hk.viewer.ViewerUtil;
@@ -364,14 +363,13 @@ public class ShelfActivity extends Activity
     
     // IBookOpener
     public void openBook(Book b) {
-    	ItemType itemType = b.getAttributes().getItemType();
-    	if(ItemType.Book == itemType) {
+    	if(b.isViewBook()) {
     		callBook(b.getPath());
     		finish();
-    	} else if(ItemType.Html == itemType) {
+    	} else if(b.isViewHtml()) {
     		callHtml(b);
     	} else {
-    		Log.e(TAG, "unknown itemType[" + itemType + "]");
+    		Log.e(TAG, "unknown itemType[" + b.getAttributes().getItemType() + "]");
     	}
     }
     

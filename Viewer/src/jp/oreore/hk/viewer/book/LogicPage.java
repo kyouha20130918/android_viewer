@@ -18,8 +18,8 @@ import jp.oreore.hk.viewer.ViewerUtil;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.util.Pair;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class LogicPage implements IPagesMaker {
 	private static final String TAG = "LogicPage";
@@ -106,21 +106,23 @@ public class LogicPage implements IPagesMaker {
 	private void showPage() {
 		shower.clearView();
 		boolean memoryDone = false;
-		Iterator<Pair<String, ImageView>> itr = shower.iterator();
+		Iterator<IPageShower.ImageInfo> itr = shower.iterator();
 		while(itr.hasNext()) {
-			Pair<String, ImageView> pair = itr.next();
-			String pnm = pair.first;
+			IPageShower.ImageInfo info = itr.next();
+			String pnm = info.path;
 			if(!memoryDone) {
 				memoryDone = true;
 				setMarkOfTemporary(pnm);
 			}
-			ImageView v = pair.second;
+			ImageView v = info.iview;
 			if(pnm.endsWith(blankExtension)) {
 				Drawable image = activity.getResources().getDrawable(R.drawable.blank_page);
 				v.setImageDrawable(image);
 				continue;
 			}
 			imageFetcher.loadImage(pnm, v);
+			
+			shower.additionalAction(info);
 		}
 		String prefetchpnm = shower.getNextPpath();
 		imageFetcher.loadImage(prefetchpnm, null);
@@ -128,10 +130,14 @@ public class LogicPage implements IPagesMaker {
 	
 	private void showFirstPage() {
 		boolean isLandscape = (ViewerUtil.OrientationMode.Landscape == ViewerUtil.getOrientationMode(activity));
-		if(isLandscape && book.isTwin()) {
-			makeTwinShower(rawSize);
+		if(book.isGtxt()) {
+			makeGtxtShower(isLandscape);
 		} else {
-			makeSoloShower(rawSize);
+			if(isLandscape && book.isTwin()) {
+				makeTwinShower();
+			} else {
+				makeSoloShower();
+			}
 		}
 		shower.setFirst(pageIdx);
 		showPage();
@@ -153,12 +159,23 @@ public class LogicPage implements IPagesMaker {
 		showPage();
 	}
 	
-	private void makeSoloShower(RawScreenSize rawSize) {
+	private void makeGtxtShower(boolean isLandscape) {
+		ImageView v = (isLandscape
+						? (ImageView)activity.findViewById(R.id.imageViewBookPageGtxtLandscape)
+						: (ImageView)activity.findViewById(R.id.imageViewBookPageGtxtPortrait));
+		TextView t = (isLandscape
+						? (TextView)activity.findViewById(R.id.textViewBookPageGtxtLandscape)
+						: (TextView)activity.findViewById(R.id.textViewBookPageGtxtPortrait));
+		String ext = activity.getString(R.string.fixed_expression_text_extension);
+		shower = new ShowGtxt(book, pageList, rawSize, v, blankExtension, t, ext, isLandscape);
+	}
+	
+	private void makeSoloShower() {
 		ImageView v = (ImageView)activity.findViewById(R.id.imageViewBookPagePortrait);
 		shower = new ShowSolo(book, pageList, rawSize, v, blankExtension);
 	}
 	
-	private void makeTwinShower(RawScreenSize rawSize) {
+	private void makeTwinShower() {
 		ImageView vLeft = (ImageView)activity.findViewById(R.id.imageViewBookPageLandLeft);
 		ImageView vRight = (ImageView)activity.findViewById(R.id.imageViewBookPageLandRight);
 		ImageView vCenter = (ImageView)activity.findViewById(R.id.imageViewBookPageLandCenter);
@@ -211,6 +228,10 @@ public class LogicPage implements IPagesMaker {
 			idx ++;
 		}
 		return (idx >= pageList.size() ? 0 : idx);
+	}
+	
+	public int getAllowFlingLimit() {
+		return shower.getAllowFlingLimit();
 	}
 	
 	//

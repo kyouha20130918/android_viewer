@@ -14,4 +14,32 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/description_page" />
 
+    <LinearLayout
+	    android:id="@+id/LinearLayout1"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical">
+	
+	    <ImageView
+	        android:id="@+id/imageViewBookPageGtxtPortrait"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:contentDescription="@string/description_page" />
+	
+	    <ScrollView
+	        android:id="@+id/scrollViewBookPageGtxtPortrait"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <TextView
+	        android:id="@+id/textViewBookPageGtxtPortrait"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:text="" />
+	
+	    </ScrollView>
+	
+	</LinearLayout>
+
 </RelativeLayout>

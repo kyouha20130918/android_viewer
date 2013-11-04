@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
-import android.util.Pair;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -147,13 +146,13 @@ public class ShowTwin extends ShowBase implements IPageShower {
 		v.setLayoutParams(lparams);
 	}
 	
-	private class Iter implements Iterator<Pair<String, ImageView>> {
+	private class Iter implements Iterator<ImageInfo> {
 		@Override
 		public boolean hasNext() {
 			return !showQueue.isEmpty();
 		}
 		@Override
-		public Pair<String, ImageView> next() {
+		public ImageInfo next() {
 			if(!hasNext()) {
 				throw new NoSuchElementException();
 			}
@@ -172,7 +171,7 @@ public class ShowTwin extends ShowBase implements IPageShower {
 			}
 			ImageView v = imageViewMap.get(pos);
 			setImageViewMargin(pos, result, v);
-			return Pair.create(path, v);
+			return new ImageInfo(path, v);
 		}
 		@Override
 		public void remove() {
@@ -181,7 +180,7 @@ public class ShowTwin extends ShowBase implements IPageShower {
 	};
 
 	@Override
-	public Iterator<Pair<String, ImageView>> iterator() {
+	public Iterator<ImageInfo> iterator() {
 		return new Iter();
 	}
 	
@@ -230,5 +229,15 @@ public class ShowTwin extends ShowBase implements IPageShower {
 		for(PagePos p : PagePos.values()) {
 			imageViewMap.get(p).setImageDrawable(null);
 		}
+	}
+	
+	@Override
+	public void additionalAction(ImageInfo i) {
+		;
+	}
+	
+	@Override
+	public int getAllowFlingLimit() {
+		return -1;
 	}
 }

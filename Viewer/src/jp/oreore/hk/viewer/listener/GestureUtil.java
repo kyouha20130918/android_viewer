@@ -44,4 +44,10 @@ public class GestureUtil {
 		return ret;
 	}
 
+	public static boolean allowUpDownFling(MotionEvent event1, int limit) {
+		if(limit < 0) {
+			return true;
+		}
+		return (event1.getRawY() <= limit);
+	}
 }

@@ -91,10 +91,12 @@ public class Attributes {
 	public void setFromPath(BookAttrOnPath a) {
 		if(BookAttrOnPath.L2R == a) {
 			setDirection(BookDirection.L2R);
+		} else if(BookAttrOnPath.gtxt == a) {
+			setItemType(ItemType.Gtxt);
 		} else if(BookAttrOnPath.html == a) {
 			setItemType(ItemType.Html);
 		} else if(BookAttrOnPath.pdf == a) {
-			setItemType(ItemType.Html);
+			setItemType(ItemType.Pdf);
 			setMimeType("application/pdf");
 		} else if(BookAttrOnPath.solo == a) {
 			setTwinView(false);

@@ -1,6 +1,6 @@
 package jp.oreore.hk.viewer.library;
 
-import jp.oreore.hk.types.ItemType;
+import jp.oreore.hk.types.ViewType;
 import jp.oreore.hk.viewer.R;
 
 public class TabBookFragment extends TabFragment {
@@ -10,8 +10,8 @@ public class TabBookFragment extends TabFragment {
 		return R.layout.fragment_tabbook;
 	}
 	
-	ItemType getItemType() {
-		return ItemType.Book;
+	ViewType getItemType() {
+		return ViewType.Book;
 	}
 	
 }

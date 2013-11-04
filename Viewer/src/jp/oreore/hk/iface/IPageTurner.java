@@ -16,4 +16,5 @@ public interface IPageTurner {
 	String getPageInfo(int idx);
 	int getPageIdx(String pnm);
 	boolean isR2L();
+	int getStartYForAllowUpDownFling();
 }

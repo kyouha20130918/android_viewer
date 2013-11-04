@@ -3,6 +3,7 @@ package jp.oreore.hk.json.obj;
 import jp.oreore.hk.json.Entry;
 import jp.oreore.hk.json.JsonUtil;
 import jp.oreore.hk.types.BookDirection;
+import jp.oreore.hk.types.ItemType;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,6 +63,21 @@ public class Book {
 	
 	public boolean isTwin() {
 		return getAttributes().isTwinView();
+	}
+	
+	public boolean isViewBook() {
+		ItemType it = getAttributes().getItemType();
+		return (ItemType.Book == it || ItemType.Gtxt == it);
+	}
+	
+	public boolean isViewHtml() {
+		ItemType it = getAttributes().getItemType();
+		return (ItemType.Html == it || ItemType.Pdf == it);
+	}
+	
+	public boolean isGtxt() {
+		ItemType it = getAttributes().getItemType();
+		return (ItemType.Gtxt == it);
 	}
 	
 	@Override

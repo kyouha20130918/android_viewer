@@ -104,7 +104,7 @@ public class CalcUtil {
 		return size;
 	}
 	
-	private static ImageSize getOriginalSize(String imagePath) {
+	public static ImageSize getOriginalSize(String imagePath) {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(imagePath, options);

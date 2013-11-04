@@ -2,7 +2,7 @@ package jp.oreore.hk.json.obj;
 
 import jp.oreore.hk.json.Entry;
 import jp.oreore.hk.json.JsonUtil;
-import jp.oreore.hk.types.ItemType;
+import jp.oreore.hk.types.ViewType;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,11 +43,11 @@ public class Shelf {
 	}
 
 	public String getName() { return name.get(self); }
-	public ItemType getItemType() { String s = itemType.get(self); return ItemType.of(s); }
+	public ViewType getItemType() { String s = itemType.get(self); return ViewType.of(s); }
 	public String getPath() { return path.get(self); }
 
 	public void setName(String u) { name.set(self, u); }
-	public void setItemType(ItemType u) { itemType.set(self, u.toString()); }
+	public void setItemType(ViewType u) { itemType.set(self, u.toString()); }
 	public void setPath(String u) { path.set(self, u); }
 
 	public JSONObject toJSONObject() { return self; }
