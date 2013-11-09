@@ -136,7 +136,7 @@ public class LogicPage implements IPagesMaker {
 			if(isLandscape && book.isTwin()) {
 				makeTwinShower();
 			} else {
-				makeSoloShower();
+				makeSoloShower(isLandscape);
 			}
 		}
 		shower.setFirst(pageIdx);
@@ -170,8 +170,8 @@ public class LogicPage implements IPagesMaker {
 		shower = new ShowGtxt(book, pageList, rawSize, v, blankExtension, t, ext, isLandscape);
 	}
 	
-	private void makeSoloShower() {
-		ImageView v = (ImageView)activity.findViewById(R.id.imageViewBookPagePortrait);
+	private void makeSoloShower(boolean isLandscape) {
+		ImageView v = (ImageView)activity.findViewById(isLandscape ? R.id.imageViewBookPageLandCenter : R.id.imageViewBookPagePortrait);
 		shower = new ShowSolo(book, pageList, rawSize, v, blankExtension);
 	}
 	
